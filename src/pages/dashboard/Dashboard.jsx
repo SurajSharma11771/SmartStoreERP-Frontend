@@ -14,14 +14,19 @@ import StatCard from "../../components/dashboard/StatCard";
 import SalesChart from "../../components/dashboard/SalesChart";
 import InventoryAlerts from "../../components/dashboard/InventoryAlerts";
 import InfoPanel from "../../components/dashboard/InfoPanel";
+import QuickActions from "../../components/dashboard/QuickActions";
 
 function Dashboard() {
   const [summary, setSummary] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [lowStockProducts, setLowStockProducts] = useState([]);
 
   useEffect(() => {
-    api.get("/dashboard/summary").then((res) => {
-      setSummary(res.data.data);
-    });
+    api.get("/dashboard/summary").then((res) => setSummary(res.data.data));
+    api.get("/products").then((res) => setProducts(res.data.data.slice(0, 4)));
+    api.get("/customers").then((res) => setCustomers(res.data.data.slice(0, 4)));
+    api.get("/products/low-stock").then((res) => setLowStockProducts(res.data.data.slice(0, 4)));
   }, []);
 
   if (!summary) return <LoadingSpinner />;
@@ -45,26 +50,22 @@ function Dashboard() {
   ];
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: "1400px", mx: "auto" }}>
       <Box mb={4}>
-        <Typography variant="h4" fontWeight="bold">
-          Dashboard
-        </Typography>
-        <Typography color="#94a3b8">
-          Welcome back, Suraj. Here is your business overview.
-        </Typography>
+        <Typography variant="h4" fontWeight="bold">Dashboard</Typography>
+        <Typography color="#94a3b8">Welcome back, Suraj. Here is your business overview.</Typography>
       </Box>
 
       <Grid container spacing={3} mb={3}>
         {cards.map((card) => (
-          <Grid item xs={12} sm={6} md={4} lg={2.4} key={card.title}>
+          <Grid item xs={12} sm={6} md={4} lg={2} key={card.title}>
             <StatCard {...card} />
           </Grid>
         ))}
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12} lg={4}>
           <SalesChart chartData={chartData} />
         </Grid>
 
@@ -72,21 +73,27 @@ function Dashboard() {
           <InventoryAlerts summary={summary} />
         </Grid>
 
-        <Grid item xs={12} md={6}>
-          <InfoPanel
-            title="Recent Products"
-            items={["Milk 1L", "Rice 5KG", "Sugar 1KG", "Bread Pack"]}
-          />
+        <Grid item xs={12}>
+          <QuickActions />
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
+          <InfoPanel title="Recent Products" items={products.map((p) => p.name)} />
+        </Grid>
+
+       <Grid item xs={12} md={4}>
+          <InfoPanel title="Recent Customers" items={customers.map((c) => c.name)} />
+        </Grid>
+
+        <Grid item xs={12} md={4}>
           <InfoPanel
-            title="Recent Customers"
-            items={["Rahul Customer", "Amit Sharma", "Priya Verma", "Local Walk-in"]}
+            title="Low Stock Products"
+            items={lowStockProducts.map((p) => `${p.name} - ${p.quantity} left`)}
           />
         </Grid>
       </Grid>
     </Box>
   );
-} 
+}
+
 export default Dashboard;

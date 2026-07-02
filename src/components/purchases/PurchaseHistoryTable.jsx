@@ -7,18 +7,19 @@ import {
   TableHead,
   TableRow,
   Chip,
-  Button,
+  IconButton,
+  Stack,
 } from "@mui/material";
 
-function PurchaseHistoryTable({ purchases, onView }) {
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+function PurchaseHistoryTable({ purchases, onView, onEdit, onDelete }) {
   return (
     <TableContainer
       component={Paper}
-      sx={{
-        mt: 3,
-        bgcolor: "#020617",
-        border: "1px solid #1e293b",
-      }}
+      sx={{ mt: 3, bgcolor: "#020617", border: "1px solid #1e293b" }}
     >
       <Table>
         <TableHead>
@@ -28,7 +29,7 @@ function PurchaseHistoryTable({ purchases, onView }) {
             <TableCell sx={{ color: "white" }}>Total Amount</TableCell>
             <TableCell sx={{ color: "white" }}>Status</TableCell>
             <TableCell sx={{ color: "white" }}>Date</TableCell>
-            <TableCell sx={{ color: "white" }}>Action</TableCell>
+            <TableCell sx={{ color: "white" }}>Actions</TableCell>
           </TableRow>
         </TableHead>
 
@@ -45,9 +46,17 @@ function PurchaseHistoryTable({ purchases, onView }) {
                 {new Date(purchase.purchaseDate).toLocaleDateString()}
               </TableCell>
               <TableCell>
-                <Button size="small" variant="outlined" onClick={() => onView(purchase.id)}>
-                  View
-                </Button>
+                <Stack direction="row" spacing={1}>
+                  <IconButton color="primary" onClick={() => onView(purchase.id)}>
+                    <VisibilityIcon />
+                  </IconButton>
+                  <IconButton color="warning" onClick={() => onEdit(purchase)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton color="error" onClick={() => onDelete(purchase)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Stack>
               </TableCell>
             </TableRow>
           ))}

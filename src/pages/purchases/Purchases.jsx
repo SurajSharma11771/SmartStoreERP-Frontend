@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Box, Snackbar } from "@mui/material";
+
 
 import api from "../../services/api";
 import PageHeader from "../../components/common/PageHeader";
@@ -8,6 +8,10 @@ import PurchaseSummaryCard from "../../components/purchases/PurchaseSummaryCard"
 import PurchaseHistoryTable from "../../components/purchases/PurchaseHistoryTable";
 import PurchaseForm from "../../components/purchases/PurchaseForm";
 import PurchaseDetailsDialog from "../../components/purchases/PurchaseDetailsDialog";
+import { Alert, Box, Snackbar, TextField } from "@mui/material";
+
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
 
 const emptyItem = {
   productId: "",
@@ -21,8 +25,10 @@ function Purchases() {
   const [products, setProducts] = useState([]);
   const [purchases, setPurchases] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
+  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [form, setForm] = useState({
     supplierId: "",
     invoiceNumber: "",
@@ -109,6 +115,23 @@ function Purchases() {
   setSelectedPurchase(res.data.data);
   setDetailsOpen(true);
 };
+const filteredPurchases = purchases.filter((purchase) =>
+  purchase.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
+  purchase.supplierName.toLowerCase().includes(search.toLowerCase())
+);
+const handleDeletePurchase = async (purchase) => {
+  const confirmDelete = window.confirm(
+    `Delete purchase ${purchase.invoiceNumber}? Stock will be rolled back.`
+  );
+
+  if (!confirmDelete) return;
+
+  await api.delete(`/purchases/${purchase.id}`);
+
+  fetchPurchases();
+  fetchProducts();
+  setDeleteSnackbarOpen(true);
+};
 
   return (
     <Box>
@@ -119,8 +142,40 @@ function Purchases() {
       />
 
       <PurchaseSummaryCard />
+      <TextField
+  fullWidth
+  size="small"
+  placeholder="Search invoice or supplier..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  sx={{
+    mt: 3,
+    mb: 2,
+    "& .MuiOutlinedInput-root": {
+      bgcolor: "#020617",
+      color: "white",
+      borderRadius: 2,
+    },
+    "& input::placeholder": {
+      color: "#94a3b8",
+      opacity: 1,
+    },
+  }}
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <SearchIcon sx={{ color: "#94a3b8" }} />
+      </InputAdornment>
+    ),
+  }}
+/>
 
-      <PurchaseHistoryTable purchases={purchases} onView={handleViewPurchase} />
+      <PurchaseHistoryTable
+  purchases={filteredPurchases}
+  onView={handleViewPurchase}
+  onEdit={(purchase) => alert("Edit purchase will be added after stock recalculation backend")}
+  onDelete={handleDeletePurchase}
+/>
 
       <PurchaseForm
         open={open}
@@ -150,6 +205,15 @@ function Purchases() {
           Purchase saved successfully!
         </Alert>
       </Snackbar>
+      <Snackbar
+  open={deleteSnackbarOpen}
+  autoHideDuration={3000}
+  onClose={() => setDeleteSnackbarOpen(false)}
+>
+  <Alert severity="success" onClose={() => setDeleteSnackbarOpen(false)}>
+    Purchase deleted and stock rolled back!
+  </Alert>
+</Snackbar>
     </Box>
   );
 }

@@ -6,6 +6,7 @@ import Products from "../pages/products/Products";
 import Categories from "../pages/categories/Categories";
 import Suppliers from "../pages/suppliers/Suppliers";
 import Customers from "../pages/customers/Customers";
+import Purchases from "../pages/purchases/Purchases";
 
 function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ function AppRoutes() {
         <Route path="categories" element={<Categories />} />
         <Route path="suppliers" element={<Suppliers />} />
         <Route path="customers" element={<Customers />} />
+        <Route path="purchases" element={<Purchases />} />
       </Route>
     </Routes>
   );

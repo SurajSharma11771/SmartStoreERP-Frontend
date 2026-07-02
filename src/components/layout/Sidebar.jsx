@@ -13,6 +13,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import CategoryIcon from "@mui/icons-material/Category";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PeopleIcon from "@mui/icons-material/People";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const menuItems = [
   { text: "Dashboard", path: "/dashboard", icon: <DashboardIcon /> },
@@ -20,6 +21,7 @@ const menuItems = [
   { text: "Categories", path: "/categories", icon: <CategoryIcon /> },
   { text: "Suppliers", path: "/suppliers", icon: <LocalShippingIcon /> },
   { text: "Customers", path: "/customers", icon: <PeopleIcon /> },
+  { text: "Purchases", path: "/purchases", icon: <ShoppingCartIcon /> },
 ];
 
 function Sidebar({ drawerWidth }) {

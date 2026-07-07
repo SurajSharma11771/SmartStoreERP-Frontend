@@ -8,10 +8,22 @@ import PurchaseSummaryCard from "../../components/purchases/PurchaseSummaryCard"
 import PurchaseHistoryTable from "../../components/purchases/PurchaseHistoryTable";
 import PurchaseForm from "../../components/purchases/PurchaseForm";
 import PurchaseDetailsDialog from "../../components/purchases/PurchaseDetailsDialog";
-import { Alert, Box, Snackbar, TextField } from "@mui/material";
+import PurchaseReturnDialog from "../../components/purchases/PurchaseReturnDialog";
+import {
+  Alert,
+  Box,
+  Snackbar,
+  TextField,
+  TablePagination,
+  MenuItem,
+  Button,
+} from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
+import PurchaseStats from "../../components/purchases/PurchaseStats";
+import { exportPurchaseInvoicePdf } from "../../components/export/PdfExporter";
+import { exportPurchasesExcel } from "../../components/export/ExcelExporter";
 
 const emptyItem = {
   productId: "",
@@ -26,9 +38,17 @@ function Purchases() {
   const [purchases, setPurchases] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [supplierFilter, setSupplierFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
+  const [returnOpen, setReturnOpen] = useState(false);
+const [returnPurchase, setReturnPurchase] = useState(null);
   const [form, setForm] = useState({
     supplierId: "",
     invoiceNumber: "",
@@ -115,14 +135,61 @@ function Purchases() {
   setSelectedPurchase(res.data.data);
   setDetailsOpen(true);
 };
-const filteredPurchases = purchases.filter((purchase) =>
-  purchase.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
-  purchase.supplierName.toLowerCase().includes(search.toLowerCase())
+const handleDownloadPdf = async (id) => {
+  const res = await api.get(`/purchases/${id}`);
+  exportPurchaseInvoicePdf(res.data.data);
+};
+const filteredPurchases = purchases.filter((purchase) => {
+  const matchesSearch =
+    purchase.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
+    purchase.supplierName.toLowerCase().includes(search.toLowerCase());
+
+  const purchaseDate = new Date(purchase.purchaseDate);
+  const matchesStartDate = startDate ? purchaseDate >= new Date(startDate) : true;
+  const matchesEndDate = endDate ? purchaseDate <= new Date(endDate) : true;
+
+  const matchesSupplier = supplierFilter
+    ? purchase.supplierName === supplierFilter
+    : true;
+
+  const matchesStatus = statusFilter
+    ? purchase.status === statusFilter
+    : true;
+
+  return (
+    matchesSearch &&
+    matchesStartDate &&
+    matchesEndDate &&
+    matchesSupplier &&
+    matchesStatus
+  );
+});
+const paginatedPurchases = filteredPurchases.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
 );
+
 const handleDeletePurchase = async (purchase) => {
   const confirmDelete = window.confirm(
     `Delete purchase ${purchase.invoiceNumber}? Stock will be rolled back.`
   );
+  const handleOpenReturn = async (purchase) => {
+  const res = await api.get(`/purchases/${purchase.id}`);
+  setReturnPurchase(res.data.data);
+  setReturnOpen(true);
+};
+
+const handleSaveReturn = async (data) => {
+  await api.post("/purchases/return", data);
+
+  setReturnOpen(false);
+  setReturnPurchase(null);
+
+  fetchPurchases();
+  fetchProducts();
+
+  alert("Purchase return completed successfully!");
+};
 
   if (!confirmDelete) return;
 
@@ -131,6 +198,23 @@ const handleDeletePurchase = async (purchase) => {
   fetchPurchases();
   fetchProducts();
   setDeleteSnackbarOpen(true);
+};
+const handleOpenReturn = async (purchase) => {
+  const res = await api.get(`/purchases/${purchase.id}`);
+  setReturnPurchase(res.data.data);
+  setReturnOpen(true);
+};
+
+const handleSaveReturn = async (data) => {
+  await api.post("/purchases/return", data);
+
+  setReturnOpen(false);
+  setReturnPurchase(null);
+
+  fetchPurchases();
+  fetchProducts();
+
+  alert("Purchase return completed successfully!");
 };
 
   return (
@@ -142,6 +226,14 @@ const handleDeletePurchase = async (purchase) => {
       />
 
       <PurchaseSummaryCard />
+      <PurchaseStats purchases={purchases} />
+      <Button
+  variant="outlined"
+  onClick={() => exportPurchasesExcel(filteredPurchases)}
+  sx={{ mb: 2 }}
+>
+  Export Excel
+</Button>
       <TextField
   fullWidth
   size="small"
@@ -169,12 +261,91 @@ const handleDeletePurchase = async (purchase) => {
     ),
   }}
 />
+<Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+  <TextField
+    label="Start Date"
+    type="date"
+    size="small"
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+    InputLabelProps={{ shrink: true }}
+    sx={{ bgcolor: "white", borderRadius: 1 }}
+  />
 
+  <TextField
+    label="End Date"
+    type="date"
+    size="small"
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+    InputLabelProps={{ shrink: true }}
+    sx={{ bgcolor: "white", borderRadius: 1 }}
+  />
+  <TextField
+  select
+  label="Supplier"
+  size="small"
+  value={supplierFilter}
+  onChange={(e) => setSupplierFilter(e.target.value)}
+  sx={{ bgcolor: "white", borderRadius: 1, minWidth: 180 }}
+>
+  <MenuItem value="">All Suppliers</MenuItem>
+  {suppliers.map((supplier) => (
+    <MenuItem key={supplier.id} value={supplier.name}>
+      {supplier.name}
+    </MenuItem>
+  ))}
+</TextField>
+
+<TextField
+  select
+  label="Status"
+  size="small"
+  value={statusFilter}
+  onChange={(e) => setStatusFilter(e.target.value)}
+  sx={{ bgcolor: "white", borderRadius: 1, minWidth: 160 }}
+>
+  <MenuItem value="">All Status</MenuItem>
+  <MenuItem value="COMPLETED">COMPLETED</MenuItem>
+</TextField>
+
+<Button
+  variant="outlined"
+  onClick={() => {
+    setSearch("");
+    setStartDate("");
+    setEndDate("");
+    setSupplierFilter("");
+    setStatusFilter("");
+  }}
+>
+  Clear
+</Button>
+</Box>
       <PurchaseHistoryTable
-  purchases={filteredPurchases}
+  purchases={paginatedPurchases}
   onView={handleViewPurchase}
+  onPdf={handleDownloadPdf}
   onEdit={(purchase) => alert("Edit purchase will be added after stock recalculation backend")}
   onDelete={handleDeletePurchase}
+  onReturn={handleOpenReturn}
+/>
+
+<TablePagination
+  component="div"
+  count={filteredPurchases.length}
+  page={page}
+  onPageChange={(event, newPage) => setPage(newPage)}
+  rowsPerPage={rowsPerPage}
+  onRowsPerPageChange={(event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  }}
+  rowsPerPageOptions={[5, 10, 25]}
+  sx={{
+    color: "white",
+    mt: 2,
+  }}
 />
 
       <PurchaseForm
@@ -194,6 +365,12 @@ const handleDeletePurchase = async (purchase) => {
   open={detailsOpen}
   onClose={() => setDetailsOpen(false)}
   purchase={selectedPurchase}
+/>
+<PurchaseReturnDialog
+  open={returnOpen}
+  onClose={() => setReturnOpen(false)}
+  purchase={returnPurchase}
+  onSave={handleSaveReturn}
 />
 
       <Snackbar

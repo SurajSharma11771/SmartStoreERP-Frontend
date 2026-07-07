@@ -14,8 +14,17 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
 
-function PurchaseHistoryTable({ purchases, onView, onEdit, onDelete }) {
+function PurchaseHistoryTable({
+  purchases,
+  onView,
+  onEdit,
+  onDelete,
+  onPdf,
+  onReturn,
+}) {
   return (
     <TableContainer
       component={Paper}
@@ -50,9 +59,19 @@ function PurchaseHistoryTable({ purchases, onView, onEdit, onDelete }) {
                   <IconButton color="primary" onClick={() => onView(purchase.id)}>
                     <VisibilityIcon />
                   </IconButton>
+
+                  <IconButton color="secondary" onClick={() => onPdf(purchase.id)}>
+                    <PictureAsPdfIcon />
+                  </IconButton>
+
+                  <IconButton color="info" onClick={() => onReturn(purchase)}>
+                    <AssignmentReturnIcon />
+                  </IconButton>
+
                   <IconButton color="warning" onClick={() => onEdit(purchase)}>
                     <EditIcon />
                   </IconButton>
+
                   <IconButton color="error" onClick={() => onDelete(purchase)}>
                     <DeleteIcon />
                   </IconButton>

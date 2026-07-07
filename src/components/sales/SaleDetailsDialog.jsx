@@ -3,13 +3,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
 } from "@mui/material";
 
 import InvoiceTemplate from "../invoice/InvoiceTemplate";
 
-function PurchaseDetailsDialog({ open, onClose, purchase }) {
-  if (!purchase) return null;
+function SaleDetailsDialog({ open, onClose, sale }) {
+  if (!sale) return null;
 
   const handlePrint = () => {
     window.print();
@@ -17,20 +17,23 @@ function PurchaseDetailsDialog({ open, onClose, purchase }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Purchase Invoice</DialogTitle>
+      <DialogTitle>Sale Invoice</DialogTitle>
 
       <DialogContent>
-  <InvoiceTemplate invoice={purchase} />
-</DialogContent>
+        <InvoiceTemplate invoice={sale} />
+      </DialogContent>
 
       <DialogActions>
-        <Button onClick={handlePrint} variant="contained">
+        <Button variant="contained" onClick={handlePrint}>
           Print
         </Button>
-        <Button onClick={onClose}>Close</Button>
+
+        <Button onClick={onClose}>
+          Close
+        </Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-export default PurchaseDetailsDialog;
+export default SaleDetailsDialog;

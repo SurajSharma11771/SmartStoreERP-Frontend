@@ -14,7 +14,8 @@ import CategoryIcon from "@mui/icons-material/Category";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PeopleIcon from "@mui/icons-material/People";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
 const menuItems = [
   { text: "Dashboard", path: "/dashboard", icon: <DashboardIcon /> },
   { text: "Products", path: "/products", icon: <InventoryIcon /> },
@@ -22,6 +23,8 @@ const menuItems = [
   { text: "Suppliers", path: "/suppliers", icon: <LocalShippingIcon /> },
   { text: "Customers", path: "/customers", icon: <PeopleIcon /> },
   { text: "Purchases", path: "/purchases", icon: <ShoppingCartIcon /> },
+  {text: "Sales",path: "/sales",icon: <PointOfSaleIcon />,},
+  {text: "Inventory",path: "/inventory",icon: <WarehouseIcon />,},
 ];
 
 function Sidebar({ drawerWidth }) {

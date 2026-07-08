@@ -1,31 +1,27 @@
 import { Outlet } from "react-router-dom";
-import { Box } from "@mui/material";
 import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
-
-const drawerWidth = 260;
 
 function MainLayout() {
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#0f172a" }}>
-      <Sidebar drawerWidth={drawerWidth} />
+    <div className="app-shell">
+      <Sidebar />
 
-      <Box sx={{ flexGrow: 1 }}>
-        <Topbar />
+      <main className="main-area">
+        <header className="topbar">
+          <div className="top-left">
+            <div className="menu-btn">≡</div>
+            <div>
+              <span className="topbar-title">Dashboard</span>
+              <span className="topbar-subtitle">Overview of your business</span>
+            </div>
+          </div>
+        </header>
 
-        <Box
-          component="main"
-          sx={{
-            p: 3,
-            ml: `${drawerWidth}px`,
-            mt: "64px",
-            color: "white",
-          }}
-        >
+        <div className="page-container">
           <Outlet />
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </main>
+    </div>
   );
 }
 

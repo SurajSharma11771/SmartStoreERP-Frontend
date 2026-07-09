@@ -422,4 +422,17 @@ body {
   .bottom-grid {
     grid-template-columns: 1fr;
   }
+  
+}.MuiTextField-root input[type="date"] {
+  color-scheme: dark;
+}
+
+.MuiInputLabel-root {
+  background: transparent;
+}
+
+.MuiTextField-root .MuiInputLabel-shrink {
+  transform: translate(14px, -9px) scale(0.75);
+  background: #111827;
+  padding: 0 6px;
 }

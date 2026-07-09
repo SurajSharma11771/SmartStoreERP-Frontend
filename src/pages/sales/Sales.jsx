@@ -241,24 +241,24 @@ function Sales() {
 
       <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
         <TextField
-          label="Start Date"
-          type="date"
-          size="small"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          sx={{ bgcolor: "white", borderRadius: 1 }}
-        />
+  className="erp-filter-date"
+  label="Start Date"
+  type="date"
+  size="small"
+  value={startDate}
+  onChange={(e) => setStartDate(e.target.value)}
+  InputLabelProps={{ shrink: true }}
+/>
 
         <TextField
-          label="End Date"
-          type="date"
-          size="small"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          sx={{ bgcolor: "white", borderRadius: 1 }}
-        />
+  className="erp-filter-date"
+  label="End Date"
+  type="date"
+  size="small"
+  value={endDate}
+  onChange={(e) => setEndDate(e.target.value)}
+  InputLabelProps={{ shrink: true }}
+/>
 
         <TextField
           select

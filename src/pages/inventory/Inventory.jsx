@@ -99,7 +99,8 @@ const handleSaveAdjustment = async (data) => {
 
       <InventorySummaryCards products={products} />
 
-      <Box sx={{ mb: 2 }}>
+      <Box sx={{ mb: 1 }}>
+        <br></br>
         <Button
           variant="outlined"
           onClick={() => exportInventoryExcel(filteredProducts)}

@@ -9,11 +9,6 @@ function MainLayout() {
       <main className="main-area">
         <header className="topbar">
           <div className="top-left">
-            <div className="menu-btn">≡</div>
-            <div>
-              <span className="topbar-title">Dashboard</span>
-              <span className="topbar-subtitle">Overview of your business</span>
-            </div>
           </div>
         </header>
 

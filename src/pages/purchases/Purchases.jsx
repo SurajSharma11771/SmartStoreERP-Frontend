@@ -267,6 +267,11 @@ const handleSaveReturn = async (data) => {
   label="Start Date"
   type="date"
   size="small"
+  slotProps={{
+  inputLabel: {
+    shrink: true,
+  },
+}}
   value={startDate}
   onChange={(e) => setStartDate(e.target.value)}
   InputLabelProps={{ shrink: true }}
@@ -277,6 +282,11 @@ const handleSaveReturn = async (data) => {
   label="End Date"
   type="date"
   size="small"
+  slotProps={{
+  inputLabel: {
+    shrink: true,
+  },
+}}
   value={endDate}
   onChange={(e) => setEndDate(e.target.value)}
   InputLabelProps={{ shrink: true }}

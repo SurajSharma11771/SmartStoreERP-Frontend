@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+﻿import { Card, CardContent, Grid, Typography } from "@mui/material";
 
 function InventorySummaryCards({ products }) {
 
@@ -44,9 +44,9 @@ function InventorySummaryCards({ products }) {
         <Grid item xs={12} sm={6} md={3} key={card.title}>
           <Card
             sx={{
-              bgcolor: "#020617",
-              color: "white",
-              border: "1px solid #1e293b",
+              bgcolor: "background.paper",
+              color: "text.primary",
+              border: "1px solid", borderColor: "divider",
               borderRadius: 3,
             }}
           >
@@ -70,3 +70,4 @@ function InventorySummaryCards({ products }) {
 }
 
 export default InventorySummaryCards;
+

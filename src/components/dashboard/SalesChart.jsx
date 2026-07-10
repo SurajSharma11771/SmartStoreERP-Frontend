@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
+﻿import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 

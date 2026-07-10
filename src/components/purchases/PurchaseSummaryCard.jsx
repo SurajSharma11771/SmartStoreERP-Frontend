@@ -1,12 +1,12 @@
-import { Card, CardContent, Typography } from "@mui/material";
+﻿import { Card, CardContent, Typography } from "@mui/material";
 
 function PurchaseSummaryCard() {
   return (
     <Card
       sx={{
-        bgcolor: "#020617",
-        color: "white",
-        border: "1px solid #1e293b",
+        bgcolor: "background.paper",
+        color: "text.primary",
+        border: "1px solid", borderColor: "divider",
         borderRadius: 3,
       }}
     >
@@ -24,3 +24,4 @@ function PurchaseSummaryCard() {
 }
 
 export default PurchaseSummaryCard;
+

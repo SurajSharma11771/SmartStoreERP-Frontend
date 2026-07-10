@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -228,8 +228,8 @@ function Sales() {
         sx={{
           mb: 2,
           "& .MuiOutlinedInput-root": {
-            bgcolor: "#020617",
-            color: "white",
+            bgcolor: "background.paper",
+            color: "text.primary",
             borderRadius: 2,
           },
           "& input::placeholder": {
@@ -276,7 +276,7 @@ function Sales() {
           size="small"
           value={customerFilter}
           onChange={(e) => setCustomerFilter(e.target.value)}
-          sx={{ bgcolor: "white", borderRadius: 1, minWidth: 180 }}
+          sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 180 }}
         >
           <MenuItem value="">All Customers</MenuItem>
           {customers.map((customer) => (
@@ -292,7 +292,7 @@ function Sales() {
           size="small"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          sx={{ bgcolor: "white", borderRadius: 1, minWidth: 160 }}
+          sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 160 }}
         >
           <MenuItem value="">All Status</MenuItem>
           <MenuItem value="COMPLETED">COMPLETED</MenuItem>
@@ -330,7 +330,7 @@ function Sales() {
           setPage(0);
         }}
         rowsPerPageOptions={[5, 10, 25]}
-        sx={{ color: "white", mt: 2 }}
+        sx={{ color: "text.primary", mt: 2 }}
       />
 
       <SaleForm
@@ -383,3 +383,4 @@ function Sales() {
 }
 
 export default Sales;
+

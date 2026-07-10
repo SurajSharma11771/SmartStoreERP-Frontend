@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+﻿import { Card, CardContent, Grid, Typography } from "@mui/material";
 
 function PurchaseStats({ purchases }) {
 
@@ -43,9 +43,9 @@ function PurchaseStats({ purchases }) {
 
           <Card
             sx={{
-              bgcolor: "#020617",
-              border: "1px solid #1e293b",
-              color: "white",
+              bgcolor: "background.paper",
+              border: "1px solid", borderColor: "divider",
+              color: "text.primary",
             }}
           >
 
@@ -76,3 +76,4 @@ function PurchaseStats({ purchases }) {
 }
 
 export default PurchaseStats;
+

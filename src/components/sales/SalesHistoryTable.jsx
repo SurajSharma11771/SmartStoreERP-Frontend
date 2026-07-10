@@ -1,4 +1,4 @@
-import {
+﻿import {
   Chip,
   IconButton,
   Paper,
@@ -24,40 +24,40 @@ function SalesHistoryTable({
   return (
     <TableContainer
       component={Paper}
-      sx={{ mt: 3, bgcolor: "#020617", border: "1px solid #1e293b" }}
+      sx={{ mt: 3, bgcolor: "background.paper", border: "1px solid", borderColor: "divider" }}
     >
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ color: "white" }}>Invoice</TableCell>
-            <TableCell sx={{ color: "white" }}>Customer</TableCell>
-            <TableCell sx={{ color: "white" }}>Total Amount</TableCell>
-            <TableCell sx={{ color: "white" }}>Returned</TableCell>
-            <TableCell sx={{ color: "white" }}>Net Sale</TableCell>
-            <TableCell sx={{ color: "white" }}>Return Status</TableCell>
-            <TableCell sx={{ color: "white" }}>Status</TableCell>
-            <TableCell sx={{ color: "white" }}>Date</TableCell>
-            <TableCell sx={{ color: "white" }}>Actions</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Invoice</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Customer</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Total Amount</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Returned</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Net Sale</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Return Status</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Status</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Date</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Actions</TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
           {sales.map((sale) => (
             <TableRow key={sale.id}>
-              <TableCell sx={{ color: "white" }}>{sale.invoiceNumber}</TableCell>
-              <TableCell sx={{ color: "white" }}>{sale.customerName}</TableCell>
-              <TableCell sx={{ color: "white" }}>₹{sale.totalAmount}</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>{sale.invoiceNumber}</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>{sale.customerName}</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>₹{sale.totalAmount}</TableCell>
               <TableCell>
                 <Chip label={sale.status} color="success" size="small" />
               </TableCell>
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
                 {new Date(sale.saleDate).toLocaleDateString()}
               </TableCell>
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
   ₹{sale.returnedAmount}
 </TableCell>
 
-<TableCell sx={{ color: "white" }}>
+<TableCell sx={{ color: "text.primary" }}>
   ₹{sale.netAmount}
 </TableCell>
 
@@ -102,3 +102,4 @@ function SalesHistoryTable({
 }
 
 export default SalesHistoryTable;
+

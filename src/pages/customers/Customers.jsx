@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
   IconButton, Table, TableBody, TableCell, TableContainer, TableHead,
@@ -93,28 +93,28 @@ function Customers() {
         placeholder="Search Customers..."
       />
 
-      <TableContainer component={Paper} sx={{ bgcolor: "#020617", border: "1px solid #1e293b" }}>
+      <TableContainer component={Paper} sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider" }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "white" }}>Name</TableCell>
-              <TableCell sx={{ color: "white" }}>Email</TableCell>
-              <TableCell sx={{ color: "white" }}>Phone</TableCell>
-              <TableCell sx={{ color: "white" }}>Address</TableCell>
-              <TableCell sx={{ color: "white" }}>Points</TableCell>
-              <TableCell sx={{ color: "white" }}>Status</TableCell>
-              <TableCell sx={{ color: "white" }}>Action</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Name</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Email</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Phone</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Address</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Points</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Status</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Action</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {filteredCustomers.map((customer) => (
               <TableRow key={customer.id}>
-                <TableCell sx={{ color: "white" }}>{customer.name}</TableCell>
-                <TableCell sx={{ color: "white" }}>{customer.email}</TableCell>
-                <TableCell sx={{ color: "white" }}>{customer.phone}</TableCell>
-                <TableCell sx={{ color: "white" }}>{customer.address}</TableCell>
-                <TableCell sx={{ color: "white" }}>{customer.loyaltyPoints}</TableCell>
+                <TableCell sx={{ color: "text.primary" }}>{customer.name}</TableCell>
+                <TableCell sx={{ color: "text.primary" }}>{customer.email}</TableCell>
+                <TableCell sx={{ color: "text.primary" }}>{customer.phone}</TableCell>
+                <TableCell sx={{ color: "text.primary" }}>{customer.address}</TableCell>
+                <TableCell sx={{ color: "text.primary" }}>{customer.loyaltyPoints}</TableCell>
                 <TableCell>
                   <Chip label={customer.status ? "Active" : "Inactive"} color="success" size="small" />
                 </TableCell>
@@ -165,3 +165,4 @@ function Customers() {
 }
 
 export default Customers;
+

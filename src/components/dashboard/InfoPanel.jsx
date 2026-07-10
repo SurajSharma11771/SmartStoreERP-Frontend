@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
+﻿import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
 
 function InfoPanel({ title, items }) {
   return (

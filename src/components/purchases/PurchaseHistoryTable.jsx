@@ -1,4 +1,4 @@
-import {
+﻿import {
   Paper,
   Table,
   TableBody,
@@ -28,30 +28,30 @@ function PurchaseHistoryTable({
   return (
     <TableContainer
       component={Paper}
-      sx={{ mt: 3, bgcolor: "#020617", border: "1px solid #1e293b" }}
+      sx={{ mt: 3, bgcolor: "background.paper", border: "1px solid", borderColor: "divider" }}
     >
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ color: "white" }}>Invoice</TableCell>
-            <TableCell sx={{ color: "white" }}>Supplier</TableCell>
-            <TableCell sx={{ color: "white" }}>Total Amount</TableCell>
-            <TableCell sx={{ color: "white" }}>Status</TableCell>
-            <TableCell sx={{ color: "white" }}>Date</TableCell>
-            <TableCell sx={{ color: "white" }}>Actions</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Invoice</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Supplier</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Total Amount</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Status</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Date</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Actions</TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
           {purchases.map((purchase) => (
             <TableRow key={purchase.id}>
-              <TableCell sx={{ color: "white" }}>{purchase.invoiceNumber}</TableCell>
-              <TableCell sx={{ color: "white" }}>{purchase.supplierName}</TableCell>
-              <TableCell sx={{ color: "white" }}>₹{purchase.totalAmount}</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>{purchase.invoiceNumber}</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>{purchase.supplierName}</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>₹{purchase.totalAmount}</TableCell>
               <TableCell>
                 <Chip label={purchase.status} color="success" size="small" />
               </TableCell>
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
                 {new Date(purchase.purchaseDate).toLocaleDateString()}
               </TableCell>
               <TableCell>
@@ -86,3 +86,4 @@ function PurchaseHistoryTable({
 }
 
 export default PurchaseHistoryTable;
+

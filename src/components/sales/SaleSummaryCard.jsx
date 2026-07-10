@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+﻿import { Card, CardContent, Grid, Typography } from "@mui/material";
 
 function SaleSummaryCard({ sales }) {
 
@@ -16,7 +16,7 @@ function SaleSummaryCard({ sales }) {
     <Grid container spacing={2} mt={1}>
 
       <Grid item xs={12} md={4}>
-        <Card sx={{ bgcolor: "#020617", color: "white" }}>
+        <Card sx={{ bgcolor: "background.paper", color: "text.primary" }}>
           <CardContent>
             <Typography color="#94a3b8">
               Total Revenue
@@ -30,7 +30,7 @@ function SaleSummaryCard({ sales }) {
       </Grid>
 
       <Grid item xs={12} md={4}>
-        <Card sx={{ bgcolor: "#020617", color: "white" }}>
+        <Card sx={{ bgcolor: "background.paper", color: "text.primary" }}>
           <CardContent>
             <Typography color="#94a3b8">
               Total Orders
@@ -44,7 +44,7 @@ function SaleSummaryCard({ sales }) {
       </Grid>
 
       <Grid item xs={12} md={4}>
-        <Card sx={{ bgcolor: "#020617", color: "white" }}>
+        <Card sx={{ bgcolor: "background.paper", color: "text.primary" }}>
           <CardContent>
             <Typography color="#94a3b8">
               Average Order
@@ -62,3 +62,4 @@ function SaleSummaryCard({ sales }) {
 }
 
 export default SaleSummaryCard;
+

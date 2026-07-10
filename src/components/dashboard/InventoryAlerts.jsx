@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Chip, Divider, Stack, Typography } from "@mui/material";
+﻿import { Box, Card, CardContent, Chip, Divider, Stack, Typography } from "@mui/material";
 
 function InventoryAlerts({ summary }) {
   const items = [

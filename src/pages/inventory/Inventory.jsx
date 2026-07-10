@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -126,8 +126,8 @@ const handleSaveAdjustment = async (data) => {
         sx={{
           mb: 2,
           "& .MuiOutlinedInput-root": {
-            bgcolor: "#020617",
-            color: "white",
+            bgcolor: "background.paper",
+            color: "text.primary",
             borderRadius: 2,
           },
           "& input::placeholder": {
@@ -146,7 +146,7 @@ const handleSaveAdjustment = async (data) => {
           onChange={(e) => setCategoryFilter(e.target.value)}
           sx={{
             minWidth: 220,
-            bgcolor: "white",
+            bgcolor: "text.primary",
             borderRadius: 1,
           }}
         >
@@ -169,7 +169,7 @@ const handleSaveAdjustment = async (data) => {
         }
         label="Show Low Stock Only"
         sx={{
-          color: "white",
+          color: "text.primary",
           mb: 2,
         }}
       />
@@ -177,21 +177,21 @@ const handleSaveAdjustment = async (data) => {
       <TableContainer
         component={Paper}
         sx={{
-          bgcolor: "#020617",
-          border: "1px solid #1e293b",
+          bgcolor: "background.paper",
+          border: "1px solid", borderColor: "divider",
         }}
       >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "white" }}>Product</TableCell>
-              <TableCell sx={{ color: "white" }}>SKU</TableCell>
-              <TableCell sx={{ color: "white" }}>Stock</TableCell>
-              <TableCell sx={{ color: "white" }}>Minimum Stock</TableCell>
-              <TableCell sx={{ color: "white" }}>Cost Price</TableCell>
-              <TableCell sx={{ color: "white" }}>Stock Value</TableCell>
-              <TableCell sx={{ color: "white" }}>Status</TableCell>
-              <TableCell sx={{ color: "white" }}>Action</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Product</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>SKU</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Stock</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Minimum Stock</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Cost Price</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Stock Value</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Status</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Action</TableCell>
             </TableRow>
           </TableHead>
 
@@ -204,18 +204,18 @@ const handleSaveAdjustment = async (data) => {
 
               return (
                 <TableRow key={product.id}>
-                  <TableCell sx={{ color: "white" }}>{product.name}</TableCell>
-                  <TableCell sx={{ color: "white" }}>{product.sku}</TableCell>
-                  <TableCell sx={{ color: "white" }}>
+                  <TableCell sx={{ color: "text.primary" }}>{product.name}</TableCell>
+                  <TableCell sx={{ color: "text.primary" }}>{product.sku}</TableCell>
+                  <TableCell sx={{ color: "text.primary" }}>
                     {product.quantity}
                   </TableCell>
-                  <TableCell sx={{ color: "white" }}>
+                  <TableCell sx={{ color: "text.primary" }}>
                     {product.minimumStock}
                   </TableCell>
-                  <TableCell sx={{ color: "white" }}>
+                  <TableCell sx={{ color: "text.primary" }}>
                     ₹{product.costPrice}
                   </TableCell>
-                  <TableCell sx={{ color: "white" }}>₹{stockValue}</TableCell>
+                  <TableCell sx={{ color: "text.primary" }}>₹{stockValue}</TableCell>
                   <TableCell>
                     <Chip
                       label={isLowStock ? "Low Stock" : "In Stock"}
@@ -259,7 +259,7 @@ const handleSaveAdjustment = async (data) => {
         }}
         rowsPerPageOptions={[5, 10, 25]}
         sx={{
-          color: "white",
+          color: "text.primary",
           mt: 2,
         }}
       />
@@ -280,3 +280,4 @@ const handleSaveAdjustment = async (data) => {
 }
 
 export default Inventory;
+

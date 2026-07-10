@@ -1,4 +1,4 @@
-import {
+﻿import {
   Table,
   TableBody,
   TableCell,
@@ -22,8 +22,8 @@ function ProductTable({
     <TableContainer
       component={Paper}
       sx={{
-        bgcolor: "#020617",
-        border: "1px solid #1e293b",
+        bgcolor: "background.paper",
+        border: "1px solid", borderColor: "divider",
       }}
     >
       <Table>
@@ -32,19 +32,19 @@ function ProductTable({
 
           <TableRow>
 
-            <TableCell sx={{ color: "white" }}>Name</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Name</TableCell>
 
-            <TableCell sx={{ color: "white" }}>SKU</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>SKU</TableCell>
 
-            <TableCell sx={{ color: "white" }}>Selling</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Selling</TableCell>
 
-            <TableCell sx={{ color: "white" }}>Cost</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Cost</TableCell>
 
-            <TableCell sx={{ color: "white" }}>Quantity</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Quantity</TableCell>
 
-            <TableCell sx={{ color: "white" }}>Status</TableCell>
+            <TableCell sx={{ color: "text.primary" }}>Status</TableCell>
 
-            <TableCell sx={{ color: "white" }}>
+            <TableCell sx={{ color: "text.primary" }}>
               Action
             </TableCell>
 
@@ -58,23 +58,23 @@ function ProductTable({
 
             <TableRow key={product.id} hover>
 
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
                 {product.name}
               </TableCell>
 
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
                 {product.sku}
               </TableCell>
 
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
                 ₹{product.sellingPrice}
               </TableCell>
 
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
                 ₹{product.costPrice}
               </TableCell>
 
-              <TableCell sx={{ color: "white" }}>
+              <TableCell sx={{ color: "text.primary" }}>
                 {product.quantity}
               </TableCell>
 
@@ -118,3 +118,4 @@ function ProductTable({
 }
 
 export default ProductTable;
+

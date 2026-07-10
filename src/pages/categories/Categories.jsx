@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
   IconButton, Table, TableBody, TableCell, TableContainer, TableHead,
@@ -90,22 +90,22 @@ function Categories() {
         placeholder="Search Categories..."
       />
 
-      <TableContainer component={Paper} sx={{ bgcolor: "#020617", border: "1px solid #1e293b" }}>
+      <TableContainer component={Paper} sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "divider" }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "white" }}>Name</TableCell>
-              <TableCell sx={{ color: "white" }}>Description</TableCell>
-              <TableCell sx={{ color: "white" }}>Status</TableCell>
-              <TableCell sx={{ color: "white" }}>Action</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Name</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Description</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Status</TableCell>
+              <TableCell sx={{ color: "text.primary" }}>Action</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {filteredCategories.map((category) => (
               <TableRow key={category.id}>
-                <TableCell sx={{ color: "white" }}>{category.name}</TableCell>
-                <TableCell sx={{ color: "white" }}>{category.description}</TableCell>
+                <TableCell sx={{ color: "text.primary" }}>{category.name}</TableCell>
+                <TableCell sx={{ color: "text.primary" }}>{category.description}</TableCell>
                 <TableCell>
                   <Chip label={category.status ? "Active" : "Inactive"} color="success" size="small" />
                 </TableCell>
@@ -164,3 +164,4 @@ function Categories() {
 }
 
 export default Categories;
+

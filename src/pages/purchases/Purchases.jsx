@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 
 import api from "../../services/api";
@@ -244,8 +244,8 @@ const handleSaveReturn = async (data) => {
     mt: 3,
     mb: 2,
     "& .MuiOutlinedInput-root": {
-      bgcolor: "#020617",
-      color: "white",
+      bgcolor: "background.paper",
+      color: "text.primary",
       borderRadius: 2,
     },
     "& input::placeholder": {
@@ -297,7 +297,7 @@ const handleSaveReturn = async (data) => {
   size="small"
   value={supplierFilter}
   onChange={(e) => setSupplierFilter(e.target.value)}
-  sx={{ bgcolor: "white", borderRadius: 1, minWidth: 180 }}
+  sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 180 }}
 >
   <MenuItem value="">All Suppliers</MenuItem>
   {suppliers.map((supplier) => (
@@ -313,7 +313,7 @@ const handleSaveReturn = async (data) => {
   size="small"
   value={statusFilter}
   onChange={(e) => setStatusFilter(e.target.value)}
-  sx={{ bgcolor: "white", borderRadius: 1, minWidth: 160 }}
+  sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 160 }}
 >
   <MenuItem value="">All Status</MenuItem>
   <MenuItem value="COMPLETED">COMPLETED</MenuItem>
@@ -353,7 +353,7 @@ const handleSaveReturn = async (data) => {
   }}
   rowsPerPageOptions={[5, 10, 25]}
   sx={{
-    color: "white",
+    color: "text.primary",
     mt: 2,
   }}
 />
@@ -406,3 +406,4 @@ const handleSaveReturn = async (data) => {
 }
 
 export default Purchases;
+

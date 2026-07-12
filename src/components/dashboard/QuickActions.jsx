@@ -1,34 +1,72 @@
-﻿import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
+﻿import {
+  CategoryOutlined,
+  GroupsOutlined,
+  Inventory2Outlined,
+  LocalShippingOutlined,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 function QuickActions() {
   const navigate = useNavigate();
 
   const actions = [
-    { label: "Add Product", path: "/products" },
-    { label: "Add Category", path: "/categories" },
-    { label: "Add Supplier", path: "/suppliers" },
-    { label: "Add Customer", path: "/customers" },
+    {
+      title: "New Product",
+      subtitle: "Add inventory item",
+      icon: <Inventory2Outlined />,
+      route: "/products",
+      color: "blue",
+    },
+    {
+      title: "New Category",
+      subtitle: "Create category",
+      icon: <CategoryOutlined />,
+      route: "/categories",
+      color: "purple",
+    },
+    {
+      title: "New Supplier",
+      subtitle: "Register supplier",
+      icon: <LocalShippingOutlined />,
+      route: "/suppliers",
+      color: "green",
+    },
+    {
+      title: "New Customer",
+      subtitle: "Create customer",
+      icon: <GroupsOutlined />,
+      route: "/customers",
+      color: "orange",
+    },
   ];
 
   return (
-    <Card sx={{ bgcolor: "#020617", color: "white", border: "1px solid #1e293b", borderRadius: 3 }}>
-      <CardContent>
-        <Typography variant="h6" fontWeight="bold" mb={2}>
-          Quick Actions
-        </Typography>
+    <section className="panel">
+      <div className="panel-title">Quick Actions</div>
 
-        <Grid container spacing={2}>
-          {actions.map((action) => (
-            <Grid item xs={12} sm={6} md={3} key={action.label}>
-              <Button fullWidth variant="contained" onClick={() => navigate(action.path)}>
-                {action.label}
-              </Button>
-            </Grid>
-          ))}
-        </Grid>
-      </CardContent>
-    </Card>
+      <div className="panel-sub">
+        Frequently used shortcuts
+      </div>
+
+      <div className="quick-actions-grid">
+        {actions.map((action) => (
+          <button
+            key={action.title}
+            className="quick-action-card"
+            onClick={() => navigate(action.route)}
+          >
+            <div className={`quick-action-icon ${action.color}`}>
+              {action.icon}
+            </div>
+
+            <div className="quick-action-text">
+              <span>{action.title}</span>
+              <small>{action.subtitle}</small>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
   );
 }
 

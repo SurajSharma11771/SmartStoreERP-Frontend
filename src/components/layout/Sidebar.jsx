@@ -20,7 +20,7 @@ const menuItems = [
   { text: "Inventory", path: "/inventory", icon: <WarehouseIcon /> },
 ];
 
-function Sidebar() {
+function Sidebar({ onNavigate }) {
   return (
     <aside className="sidebar">
       <div className="logo-box">
@@ -34,6 +34,7 @@ function Sidebar() {
         <NavLink
           key={item.path}
           to={item.path}
+          onClick={onNavigate}  
           className={({ isActive }) =>
             isActive ? "sidebar-link active" : "sidebar-link"
           }

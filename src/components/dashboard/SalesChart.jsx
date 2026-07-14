@@ -1,26 +1,93 @@
-﻿import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
+﻿import {
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Stack,
+  Typography,
+} from "@mui/material";
+
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 function SalesChart({ chartData }) {
   return (
-    <Card sx={{ bgcolor: "#020617", color: "white", border: "1px solid #1e293b", borderRadius: 3, height: 300 }}>
+    <Card
+      sx={{
+        bgcolor: "background.paper",
+        color: "text.primary",
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 3,
+        height: 300,
+      }}
+    >
       <CardContent>
-        <Stack direction="row" justifyContent="space-between" mb={3}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          mb={3}
+        >
           <Box>
-            <Typography variant="h6" fontWeight="bold">Weekly Sales Overview</Typography>
-            <Typography color="#94a3b8" fontSize={14}>Demo analytics preview</Typography>
+            <Typography variant="h6" fontWeight="bold">
+              Weekly Sales Overview
+            </Typography>
+
+            <Typography color="text.secondary" fontSize={14}>
+              Sales performance grouped by weekday
+            </Typography>
           </Box>
-          <Chip icon={<TrendingUpIcon />} label="+12.5%" color="success" size="small" />
+
+          <Chip
+            icon={<TrendingUpIcon />}
+            label="Live data"
+            color="success"
+            size="small"
+          />
         </Stack>
 
         <Box sx={{ height: 190 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
-              <XAxis dataKey="name" stroke="#94a3b8" />
-              <YAxis stroke="#94a3b8" />
+            <BarChart
+  data={chartData}
+  margin={{
+    top: 0,
+    right: 8,
+    left: -28,
+    bottom: 0,
+  }}
+>
+              <XAxis
+                dataKey="name"
+                stroke="#64748b"
+                tickLine={false}
+                axisLine={false}
+              />
+
+              <YAxis
+  stroke="#64748b"
+  width={22}
+  tickMargin={2}
+  tickLine={false}
+  axisLine={false}
+  tickFormatter={(value) => `₹${value}`}
+/>
               <Tooltip />
-              <Bar dataKey="sales" fill="#2563eb" radius={[8, 8, 0, 0]} />
+
+              <Bar
+                dataKey="sales"
+                fill="#2563eb"
+                radius={[8, 8, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </Box>

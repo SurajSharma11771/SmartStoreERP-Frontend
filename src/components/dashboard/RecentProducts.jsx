@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function RecentProducts({ products = [] }) {
   const navigate = useNavigate();
-  const recentProducts = products.slice(0, 4);
+  const recentProducts = [...products].reverse().slice(0, 4);
 
   return (
     <section className="panel dashboard-list-panel">

@@ -30,11 +30,11 @@ function SalesOverview({ data }) {
           <BarChart
             data={data}
             margin={{
-              top: 16,
-              right: 12,
-              left: 0,
-              bottom: 0,
-            }}
+  top: 16,
+  right: 12,
+  left: -12,
+  bottom: 0,
+}}
           >
             <CartesianGrid
               strokeDasharray="3 3"
@@ -53,19 +53,21 @@ function SalesOverview({ data }) {
             />
 
             <YAxis
-              axisLine={false}
-              tickLine={false}
-              width={70}
-              tick={{
-                fill: "var(--muted)",
-                fontSize: 12,
-              }}
-              tickFormatter={(value) =>
-                value >= 1000
-                  ? `₹${Math.round(value / 1000)}k`
-                  : `₹${value}`
-              }
-            />
+  axisLine={false}
+  tickLine={false}
+  width={42}
+  dx={-6}
+  tickMargin={4}
+  tick={{
+    fill: "var(--muted)",
+    fontSize: 12,
+  }}
+  tickFormatter={(value) =>
+    value >= 1000
+      ? `₹${Math.round(value / 1000)}k`
+      : `₹${value}`
+  }
+/>
 
             <Tooltip
               cursor={{ fill: "var(--surface-soft)" }}

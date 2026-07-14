@@ -38,7 +38,7 @@ function RecentCustomers({ customers = [] }) {
             No customers available
           </div>
         ) : (
-          recentCustomers.map((customer) => (
+          recentCustomers.map((customer,index) => (
             <div
               className="dashboard-list-item"
               key={customer.id}
@@ -60,7 +60,7 @@ function RecentCustomers({ customers = [] }) {
               </div>
 
               <span className="customer-id-badge">
-                #{customer.id}
+                #{recentCustomers.length - index}
               </span>
             </div>
           ))

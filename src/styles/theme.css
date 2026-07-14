@@ -1016,10 +1016,6 @@ html[data-theme="dark"]
     display: none;
   }
 
-  .page-container {
-    padding: 22px;
-  }
-
   .dashboard-grid-top {
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
@@ -1027,10 +1023,7 @@ html[data-theme="dark"]
 }
 
 @media (max-width: 600px) {
-  .page-container {
-    padding: 14px;
-  }
-
+  
   .dashboard-grid-top,
   .quick-grid {
     grid-template-columns: 1fr;
@@ -1059,345 +1052,9 @@ html[data-theme="dark"]
   }
   .quick-actions-grid {
   grid-template-columns: 1fr;
-}}
-/* =========================================================
-   PROFESSIONAL MOBILE APP LAYOUT
-   ========================================================= */
-
-.mobile-topbar,
-.mobile-bottom-nav {
-  display: none;
+}
 }
 
-.desktop-sidebar-wrapper {
-  flex-shrink: 0;
-}
-
-.mobile-drawer .MuiDrawer-paper {
-  background: var(--sidebar);
-  color: var(--text);
-}
-
-.mobile-drawer .sidebar {
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-  position: static;
-  border-right: 0;
-}
-
-/* Mobile top bar */
-
-.mobile-topbar {
-  height: 72px;
-  padding: 0 16px;
-  align-items: center;
-  gap: 12px;
-  position: sticky;
-  top: 0;
-  z-index: 1100;
-  background: color-mix(in srgb, var(--card) 94%, transparent);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(16px);
-}
-
-.mobile-icon-button {
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 12px;
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-}
-
-.mobile-icon-button:hover {
-  background: var(--surface-soft);
-}
-
-.mobile-icon-button svg {
-  font-size: 27px;
-}
-
-.mobile-brand {
-  min-width: 0;
-  flex: 1;
-}
-
-.mobile-brand-title {
-  color: var(--text);
-  font-size: 21px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.5px;
-}
-
-.mobile-brand-title span {
-  color: var(--blue);
-}
-
-.mobile-brand-subtitle {
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-}
-
-.mobile-topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.notification-button {
-  position: relative;
-}
-
-.notification-count {
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  display: grid;
-  place-items: center;
-  position: absolute;
-  top: 1px;
-  right: 0;
-  border: 2px solid var(--card);
-  border-radius: 999px;
-  background: var(--purple);
-  color: white;
-  font-size: 9px;
-  font-weight: 900;
-}
-
-/* Mobile bottom navigation */
-
-.mobile-bottom-nav {
-  height: 72px;
-  padding: 7px 8px max(7px, env(safe-area-inset-bottom));
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1200;
-  background: color-mix(in srgb, var(--card) 96%, transparent);
-  border-top: 1px solid var(--border);
-  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08);
-  backdrop-filter: blur(18px);
-}
-
-.mobile-bottom-link {
-  min-width: 0;
-  padding: 4px 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 10px;
-  font-weight: 750;
-  cursor: pointer;
-}
-
-.mobile-bottom-link svg {
-  font-size: 23px;
-}
-
-.mobile-bottom-link.active {
-  color: var(--blue);
-}
-
-.mobile-bottom-link.active::before {
-  content: "";
-  width: 34px;
-  height: 3px;
-  position: absolute;
-  top: 0;
-  border-radius: 0 0 999px 999px;
-  background: var(--blue);
-}
-
-.mobile-bottom-link {
-  position: relative;
-}
-
-/* Better mobile cards */
-
-@media (max-width: 900px) {
-  .desktop-sidebar-wrapper,
-  .desktop-topbar-wrapper {
-    display: none;
-  }
-
-  .mobile-topbar {
-    display: flex;
-  }
-
-  .mobile-bottom-nav {
-    display: grid;
-  }
-
-  .app-shell {
-    display: block;
-  }
-
-  .main-area {
-    width: 100%;
-  }
-
-  .page-container {
-    padding: 16px 14px 94px;
-  }
-
-  .dashboard-grid-top {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .dashboard-card,
-  .panel {
-    border-radius: 18px;
-    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
-  }
-
-  .stat-card {
-    min-height: 138px;
-    padding: 16px;
-    display: block;
-    position: relative;
-  }
-
-  .stat-icon {
-    width: 44px;
-    height: 44px;
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    border-radius: 13px;
-  }
-
-  .stat-icon svg {
-    font-size: 22px;
-  }
-
-  .stat-title {
-    max-width: calc(100% - 50px);
-    font-size: 12px;
-  }
-
-  .stat-value {
-    margin-top: 18px;
-    font-size: 28px;
-  }
-
-  .stat-footer {
-    margin-top: 12px;
-    font-size: 10px;
-  }
-
-  .dashboard-row,
-  .bottom-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 14px;
-  }
-
-  .panel {
-    padding: 18px;
-  }
-
-  .panel-title {
-    font-size: 18px;
-  }
-
-  .panel-sub {
-    font-size: 12px;
-  }
-
-  .fake-chart {
-    width: 100%;
-    height: 230px;
-    padding: 22px 8px 0;
-    gap: 0;
-    justify-content: space-between;
-    overflow: hidden;
-  }
-
-  .bar {
-    width: 24px;
-  }
-
-  .quick-actions-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .quick-action-card {
-    min-height: 105px;
-    padding: 14px 10px;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-  }
-
-  .quick-action-text {
-    align-items: center;
-  }
-
-  .inventory-alerts-panel {
-    min-height: auto;
-  }
-
-  .inventory-alert-card {
-    min-height: 68px;
-  }
-
-  .dashboard-list-panel {
-    min-height: auto;
-  }
-}
-
-@media (max-width: 420px) {
-  .page-container {
-    padding-right: 12px;
-    padding-left: 12px;
-  }
-
-  .dashboard-grid-top {
-    gap: 10px;
-  }
-
-  .stat-card {
-    min-height: 130px;
-    padding: 14px;
-  }
-
-  .stat-title {
-    font-size: 11px;
-  }
-
-  .stat-value {
-    font-size: 25px;
-  }
-
-  .stat-footer {
-    font-size: 9px;
-  }
-
-  .panel {
-    padding: 16px;
-  }
-}
   /* =========================================================
    SMARTSTORE PROFESSIONAL MOBILE DASHBOARD
    ========================================================= */
@@ -1484,28 +1141,6 @@ html[data-theme="dark"]
   display: flex;
   align-items: center;
 }
-
-.mobile-notification-button {
-  position: relative;
-}
-
-.mobile-notification-badge {
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
-  display: grid;
-  place-items: center;
-  position: absolute;
-  top: 1px;
-  right: 0;
-  border: 2px solid var(--card);
-  border-radius: 999px;
-  background: var(--purple);
-  color: #ffffff;
-  font-size: 9px;
-  font-weight: 900;
-}
-
 /* Mobile hero */
 
 .mobile-dashboard-hero {
@@ -1857,5 +1492,852 @@ html[data-theme="dark"]
     width: 62px;
     height: 60px;
   }
+  
 }
-    
+/* =========================================================
+   MOBILE CRUD PAGES
+   ========================================================= */
+
+.erp-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.erp-page-title {
+  margin: 0;
+  color: var(--text);
+  font-size: 32px;
+  font-weight: 850;
+  line-height: 1.15;
+  letter-spacing: -0.7px;
+}
+
+.erp-page-action {
+  flex-shrink: 0;
+}
+
+.mobile-table-card {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.mobile-table-card .MuiTable-root {
+  min-width: 720px;
+}
+
+.mobile-table-card .MuiTableCell-root {
+  padding: 14px 16px;
+  white-space: nowrap;
+}
+
+.mobile-filter-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.mobile-export-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.mobile-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 900px) {
+  .erp-page-header {
+    margin-bottom: 18px;
+  }
+
+  .erp-page-title {
+    font-size: 30px;
+  }
+
+  .page-container {
+    padding: 18px 14px 94px !important;
+  }
+
+  .mobile-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .mobile-filter-row {
+    gap: 10px;
+  }
+
+  .mobile-filter-row > .MuiFormControl-root,
+  .mobile-filter-row > .MuiTextField-root {
+    flex: 1 1 180px;
+    min-width: 0 !important;
+    background: transparent !important;
+  }
+
+  .mobile-filter-row > .MuiButton-root {
+    min-height: 40px;
+  }
+
+  .mobile-table-card {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) transparent;
+  }
+
+  .mobile-table-card .MuiTable-root {
+    min-width: 680px;
+  }
+
+  .mobile-table-card .MuiTableCell-root {
+    padding: 12px 14px !important;
+    font-size: 13px;
+  }
+
+  .MuiTablePagination-root {
+    overflow: visible !important;
+  }
+
+  .MuiTablePagination-toolbar {
+    min-height: 64px !important;
+    padding: 6px 4px !important;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .MuiTablePagination-spacer {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .erp-page-header {
+    align-items: center;
+    gap: 10px;
+  }
+
+  .erp-page-title {
+    font-size: 27px;
+  }
+
+  .erp-page-action .MuiButton-root,
+  .erp-page-header > .MuiButton-root {
+    min-width: auto;
+    min-height: 44px;
+    padding: 0 17px;
+    border-radius: 13px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .mobile-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mobile-filter-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mobile-filter-row > .MuiTextField-root,
+  .mobile-filter-row > .MuiFormControl-root {
+    width: 100%;
+  }
+
+  .mobile-filter-row > .MuiButton-root {
+    justify-self: start;
+  }
+
+  .mobile-export-row {
+    margin: 14px 0;
+  }
+
+  .mobile-export-row .MuiButton-root {
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .mobile-table-card .MuiTable-root {
+    min-width: 650px;
+  }
+
+  .mobile-table-card .MuiTableCell-root {
+    padding: 11px 13px !important;
+    font-size: 12px;
+  }
+}
+/* =========================================================
+   MOBILE PAGE SIZE POLISH
+   ========================================================= */
+
+@media (max-width: 768px) {
+  /* Inventory summary cards */
+  .mobile-summary-grid .MuiCard-root {
+    min-height: 104px !important;
+    border-radius: 18px !important;
+  }
+
+  .mobile-summary-grid .MuiCardContent-root {
+    padding: 15px !important;
+  }
+
+  .mobile-summary-grid .MuiCardContent-root > .MuiTypography-root:first-child {
+    font-size: 13px !important;
+    line-height: 1.25;
+  }
+
+  .mobile-summary-grid .mobile-summary-value {
+    margin-top: 7px;
+    font-size: 26px !important;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  /* Sales/Purchase summary cards */
+  .mobile-stat-card {
+    min-height: 106px !important;
+    border-radius: 18px !important;
+  }
+
+  .mobile-stat-card .MuiCardContent-root {
+    padding: 16px !important;
+  }
+
+  .mobile-stat-value {
+    margin-top: 8px !important;
+    font-size: 28px !important;
+    line-height: 1.1 !important;
+    font-weight: 750 !important;
+  }
+
+  /* Purchase management information card */
+  .mobile-hero-card {
+    padding: 4px !important;
+    border-radius: 22px !important;
+  }
+
+  /* Page header */
+  .erp-page-header {
+    min-height: 48px;
+    margin-bottom: 18px;
+  }
+
+  .erp-page-title {
+    font-size: 26px !important;
+    line-height: 1.15;
+  }
+
+  .erp-page-action .MuiButton-root {
+    min-height: 42px;
+    padding: 0 15px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+
+  /* Export buttons */
+  .mobile-export-row {
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .mobile-export-row .MuiButton-root {
+    min-height: 43px;
+    border-radius: 12px;
+    font-size: 13px;
+  }
+
+  /* Search and filters */
+  .mobile-filter-row .MuiInputBase-root,
+  .page-container > .MuiTextField-root .MuiInputBase-root {
+    min-height: 48px;
+    border-radius: 14px;
+  }
+
+  .mobile-filter-row .MuiInputBase-input {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  /* Table */
+  .mobile-table-card {
+    border-radius: 14px !important;
+  }
+
+  .mobile-table-card .MuiTableCell-root {
+    height: 50px;
+  }
+}
+/* =========================================================
+   SALES SUMMARY MOBILE
+   ========================================================= */
+
+.sales-summary-mobile-card {
+  min-height: 130px;
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-radius: 18px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.sales-summary-mobile-content {
+  padding: 20px !important;
+}
+
+.sales-summary-mobile-label {
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.sales-summary-mobile-value {
+  margin-top: 10px !important;
+  color: var(--text) !important;
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+}
+
+@media (max-width: 600px) {
+  .sales-summary-grid {
+    margin-top: 4px !important;
+  }
+  .sales-summary-mobile-card {
+    min-height: 112px;
+    border-radius: 16px !important;
+  }
+
+  .sales-summary-mobile-content {
+    padding: 16px !important;
+  }
+
+  .sales-summary-mobile-label {
+    font-size: 13px !important;
+  }
+
+  .sales-summary-mobile-value {
+    margin-top: 8px !important;
+    font-size: 25px !important;
+  }
+}
+/* Inventory Mobile */
+
+.inventory-summary-card{
+
+min-height:115px;
+
+}
+
+.inventory-summary-title{
+
+font-size:14px!important;
+
+font-weight:600!important;
+
+}
+
+.inventory-summary-value{
+
+font-size:22px!important;
+
+font-weight:700!important;
+
+margin-top:8px!important;
+
+word-break:break-word;
+
+}
+
+@media(max-width:600px){
+
+.inventory-summary-card{
+
+min-height:95px;
+
+}
+
+.inventory-summary-value{
+
+font-size:18px!important;
+
+}
+
+}
+/* Purchase Management card */
+
+.purchase-mobile-hero {
+  width: 100% !important;
+  margin: 0 0 16px !important;
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.purchase-mobile-hero .purchase-mobile-hero-content {
+  padding: 20px !important;
+}
+
+.purchase-mobile-hero-title {
+  margin: 0 !important;
+  color: var(--text) !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+.purchase-mobile-hero-text {
+  margin-top: 7px !important;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+}
+
+@media (max-width: 600px) {
+  .purchase-mobile-hero {
+    margin-bottom: 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .purchase-mobile-hero .purchase-mobile-hero-content {
+    padding: 14px 16px !important;
+  }
+
+  .purchase-mobile-hero-title {
+    font-size: 17px !important;
+  }
+
+  .purchase-mobile-hero-text {
+    margin-top: 5px !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+}
+/* =========================================================
+   PURCHASE SUMMARY CARDS
+   ========================================================= */
+
+.purchase-summary-card {
+  min-height: 115px;
+}
+
+.purchase-summary-content {
+  padding: 18px !important;
+}
+
+.purchase-summary-title {
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.purchase-summary-value {
+  margin-top: 8px !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+@media (max-width:600px){
+
+.purchase-summary-card{
+
+min-height:90px;
+
+}
+
+.purchase-summary-content{
+
+padding:12px!important;
+
+}
+
+.purchase-summary-title{
+
+font-size:13px!important;
+
+}
+
+.purchase-summary-value{
+
+font-size:18px!important;
+
+}
+
+}
+/* Purchase stats: always three cards in one row */
+
+.purchase-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+
+.purchase-summary-card {
+  min-width: 0;
+  min-height: 112px;
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-radius: 16px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.purchase-summary-content {
+  padding: 18px !important;
+}
+
+.purchase-summary-title {
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.purchase-summary-value {
+  margin-top: 10px !important;
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .purchase-stats-grid {
+    gap: 8px;
+    margin: 12px 0 18px;
+  }
+
+  .purchase-summary-card {
+    min-height: 92px;
+    border-radius: 13px !important;
+  }
+
+  .purchase-summary-content {
+    padding: 11px 9px !important;
+  }
+
+  .purchase-summary-title {
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+  }
+
+  .purchase-summary-value {
+    margin-top: 7px !important;
+    font-size: 18px !important;
+  }
+}    
+/* =========================================================
+   INVENTORY SUMMARY CARDS
+   ========================================================= */
+
+.inventory-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.inventory-summary-card {
+  min-width: 0;
+  min-height: 112px;
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-radius: 16px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.inventory-summary-content {
+  padding: 18px !important;
+}
+
+.inventory-summary-title {
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.inventory-summary-value {
+  margin-top: 10px !important;
+  color: var(--text) !important;
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .inventory-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .inventory-summary-card {
+    min-height: 96px;
+    border-radius: 14px !important;
+  }
+
+  .inventory-summary-content {
+    padding: 13px !important;
+  }
+
+  .inventory-summary-title {
+    font-size: 12px !important;
+  }
+
+  .inventory-summary-value {
+    margin-top: 7px !important;
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .inventory-stats-grid {
+    gap: 8px;
+  }
+
+  .inventory-summary-content {
+    padding: 11px !important;
+  }
+
+  .inventory-summary-title {
+    font-size: 11px !important;
+  }
+
+  .inventory-summary-value {
+    font-size: 18px !important;
+  }
+}
+/* =========================================================
+   SALES SUMMARY CARDS
+   ========================================================= */
+
+.sales-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sales-summary-card {
+  min-width: 0;
+  min-height: 112px;
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-radius: 16px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.sales-summary-content {
+  padding: 18px !important;
+}
+
+.sales-summary-title {
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.25;
+}
+
+.sales-summary-value {
+  margin-top: 10px !important;
+  color: var(--text) !important;
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width:900px){
+
+.sales-stats-grid{
+
+grid-template-columns:repeat(3,minmax(0,1fr));
+
+gap:10px;
+
+margin-bottom:18px;
+
+}
+
+.sales-summary-card{
+
+min-height:95px;
+
+border-radius:14px!important;
+
+}
+
+.sales-summary-content{
+
+padding:13px!important;
+
+}
+
+.sales-summary-title{
+
+font-size:12px!important;
+
+}
+
+.sales-summary-value{
+
+margin-top:7px!important;
+
+font-size:20px!important;
+
+}
+
+}
+
+@media (max-width:390px){
+
+.sales-stats-grid{
+
+gap:8px;
+
+}
+
+.sales-summary-content{
+
+padding:11px!important;
+
+}
+
+.sales-summary-title{
+
+font-size:11px!important;
+
+}
+
+.sales-summary-value{
+
+font-size:18px!important;
+
+}
+
+}
+.mobile-filter-row{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin-bottom:18px;
+}
+
+.mobile-filter-row .MuiTextField-root{
+width:100%;
+}
+
+.mobile-clear-btn{
+width:110px;
+height:42px;
+}
+
+@media (max-width: 600px) {
+  .mobile-filter-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .mobile-filter-row > .MuiTextField-root {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .mobile-clear-btn {
+    width: auto;
+    min-width: 90px;
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+.desktop-data-table {
+  display: block;
+}
+
+.mobile-data-list {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .desktop-data-table {
+    display: none;
+  }
+
+  .mobile-data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mobile-data-card {
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .mobile-data-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .mobile-data-card-title {
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .mobile-data-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .mobile-data-label {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .mobile-data-value {
+    margin-top: 3px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-data-actions {
+    margin-top: 14px;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+  }
+}

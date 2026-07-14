@@ -6,25 +6,20 @@ function PageHeader({
   onButtonClick,
 }) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        mb: 3,
-      }}
-    >
-      <Typography variant="h4" fontWeight="bold">
+    <Box className="erp-page-header">
+      <Typography className="erp-page-title">
         {title}
       </Typography>
 
       {buttonText && (
-        <Button
-          variant="contained"
-          onClick={onButtonClick}
-        >
-          {buttonText}
-        </Button>
+        <Box className="erp-page-action">
+          <Button
+            variant="contained"
+            onClick={onButtonClick}
+          >
+            {buttonText}
+          </Button>
+        </Box>
       )}
     </Box>
   );

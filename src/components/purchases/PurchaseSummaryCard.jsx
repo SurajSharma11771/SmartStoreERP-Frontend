@@ -2,20 +2,25 @@
 
 function PurchaseSummaryCard() {
   return (
-    <Card
-      sx={{
-        bgcolor: "background.paper",
-        color: "text.primary",
-        border: "1px solid", borderColor: "divider",
-        borderRadius: 3,
-      }}
-    >
-      <CardContent>
-        <Typography variant="h6" fontWeight="bold">
+    <Card className="purchase-mobile-hero">
+      <CardContent
+className="purchase-mobile-hero-content"
+sx={{
+py:2,
+px:2.5
+}}
+>
+        <Typography
+className="purchase-mobile-hero-title"
+variant="h6"
+>
           Purchase Management
         </Typography>
 
-        <Typography color="#94a3b8" mt={1}>
+        <Typography
+className="purchase-mobile-hero-text"
+variant="body2"
+>
           Create purchase entries and automatically increase product stock.
         </Typography>
       </CardContent>
@@ -24,4 +29,3 @@ function PurchaseSummaryCard() {
 }
 
 export default PurchaseSummaryCard;
-

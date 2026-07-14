@@ -1,10 +1,8 @@
 ﻿import { useEffect, useState } from "react";
 import {
-  Alert,
   Box,
   Button,
   MenuItem,
-  Snackbar,
   TablePagination,
   TextField,
 } from "@mui/material";
@@ -17,6 +15,8 @@ import SaleForm from "../../components/sales/SaleForm";
 import SaleDetailsDialog from "../../components/sales/SaleDetailsDialog";
 import SalesReturnDialog from "../../components/sales/SalesReturnDialog";
 import { exportSalesExcel } from "../../components/export/ExcelExporter";
+import AppSnackbar from "../../components/common/AppSnackbar";
+import useAppSnackbar from "../../hooks/useAppSnackbar";
 
 const emptyItem = {
   productId: "",
@@ -46,12 +46,14 @@ function Sales() {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedSale, setSelectedSale] = useState(null);
-  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
-  const [returnSnackbarOpen, setReturnSnackbarOpen] = useState(false);
-
   const [returnOpen, setReturnOpen] = useState(false);
   const [returnSale, setReturnSale] = useState(null);
-
+  const {
+  snackbar,
+  showSuccess,
+  showError,
+  closeSnackbar,
+} = useAppSnackbar();
   const fetchSales = () => {
     api.get("/sales").then((res) => setSales(res.data.data));
   };
@@ -109,7 +111,7 @@ function Sales() {
         })),
       });
 
-      alert("Sale saved successfully!");
+      showSuccess("Sale saved successfully!");
 
       setOpen(false);
       setForm({
@@ -140,7 +142,7 @@ function Sales() {
 
     fetchSales();
     fetchProducts();
-    setDeleteSnackbarOpen(true);
+    showSuccess("Sale deleted and stock restored!");
   };
 
   const handleOpenReturn = async (sale) => {
@@ -161,15 +163,16 @@ function Sales() {
       fetchSales();
       fetchProducts();
 
-      setReturnSnackbarOpen(true);
+     showSuccess("Sale returned successfully!");
     } catch (error) {
-      console.error("Sales return error:", error);
-      alert(
-        error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Sales return failed"
-      );
-    }
+  console.error("Sales return error:", error);
+
+  showError(
+    error.response?.data?.message ||
+    error.response?.data?.error ||
+    "Sales return failed."
+  );
+}
   };
 
   const filteredSales = sales.filter((sale) => {
@@ -211,13 +214,14 @@ function Sales() {
 
       <SaleSummaryCard sales={sales} />
 
-      <Button
-        variant="outlined"
-        sx={{ mt: 2, mb: 2 }}
-        onClick={() => exportSalesExcel(filteredSales)}
-      >
-        Export Excel
-      </Button>
+      <Box className="mobile-export-row">
+  <Button
+    variant="outlined"
+    onClick={() => exportSalesExcel(filteredSales)}
+  >
+    Export Excel
+  </Button>
+</Box>
 
       <TextField
         fullWidth
@@ -239,8 +243,9 @@ function Sales() {
         }}
       />
 
-      <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
+      <Box className="mobile-filter-row">
         <TextField
+        fullWidth
   className="erp-filter-date"
   label="Start Date"
   type="date"
@@ -256,6 +261,7 @@ function Sales() {
 />
 
         <TextField
+        fullWidth
   className="erp-filter-date"
   label="End Date"
   type="date"
@@ -271,13 +277,17 @@ function Sales() {
 />
 
         <TextField
-          select
-          label="Customer"
-          size="small"
-          value={customerFilter}
-          onChange={(e) => setCustomerFilter(e.target.value)}
-          sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 180 }}
-        >
+  select
+  fullWidth
+  label="Customer"
+  size="small"
+  value={customerFilter}
+  onChange={(e) => setCustomerFilter(e.target.value)}
+  sx={{
+    bgcolor: "text.primary",
+    borderRadius: 1,
+  }}
+>
           <MenuItem value="">All Customers</MenuItem>
           {customers.map((customer) => (
             <MenuItem key={customer.id} value={customer.name}>
@@ -288,11 +298,12 @@ function Sales() {
 
         <TextField
           select
+          fullWidth
           label="Status"
           size="small"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 160 }}
+          sx={{ bgcolor: "text.primary", borderRadius: 1}}
         >
           <MenuItem value="">All Status</MenuItem>
           <MenuItem value="COMPLETED">COMPLETED</MenuItem>
@@ -300,6 +311,7 @@ function Sales() {
 
         <Button
           variant="outlined"
+          className="mobile-clear-btn"
           onClick={() => {
             setSearch("");
             setStartDate("");
@@ -360,24 +372,12 @@ function Sales() {
         onSave={handleSaveReturn}
       />
 
-      <Snackbar
-        open={deleteSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setDeleteSnackbarOpen(false)}
-      >
-        <Alert severity="success" onClose={() => setDeleteSnackbarOpen(false)}>
-          Sale deleted successfully!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-  open={returnSnackbarOpen}
-  autoHideDuration={3000}
-  onClose={() => setReturnSnackbarOpen(false)}
->
-  <Alert severity="success" onClose={() => setReturnSnackbarOpen(false)}>
-    Sales return completed. Stock increased successfully!
-  </Alert>
-</Snackbar>
+      <AppSnackbar
+  open={snackbar.open}
+  message={snackbar.message}
+  severity={snackbar.severity}
+  onClose={closeSnackbar}
+/>
     </Box>
   );
 }

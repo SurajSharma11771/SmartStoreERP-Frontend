@@ -9,7 +9,9 @@ import SearchToolbar from "../../components/common/SearchToolbar";
 import ProductTable from "../../components/products/ProductTable";
 import ProductForm from "../../components/products/ProductForm";
 import DeleteProductDialog from "../../components/products/DeleteProductDialog";
-
+import AppSnackbar from "../../components/common/AppSnackbar";
+import useAppSnackbar from "../../hooks/useAppSnackbar";
+   
 const initialForm = {
   name: "",
   sku: "",
@@ -32,6 +34,12 @@ function Products() {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const {
+  snackbar,
+  showSuccess,
+  showError,
+  closeSnackbar,
+} = useAppSnackbar();
 
   const [form, setForm] = useState(initialForm);
 
@@ -51,39 +59,39 @@ function Products() {
 
   }, []);
 
-  const handleSave = async () => {
+ const handleSave = async () => {
+  try {
+    const payload = {
+      ...form,
+      sellingPrice: Number(form.sellingPrice),
+      costPrice: Number(form.costPrice),
+      quantity: Number(form.quantity),
+      minimumStock: Number(form.minimumStock),
+    };
 
     if (isEdit) {
-
-      await api.put(`/products/${selectedProduct.id}`, {
-        ...form,
-        sellingPrice: Number(form.sellingPrice),
-        costPrice: Number(form.costPrice),
-        quantity: Number(form.quantity),
-        minimumStock: Number(form.minimumStock),
-      });
-
+      await api.put(`/products/${selectedProduct.id}`, payload);
+      showSuccess("Product updated successfully!");
     } else {
-
-      await api.post("/products", {
-        ...form,
-        sellingPrice: Number(form.sellingPrice),
-        costPrice: Number(form.costPrice),
-        quantity: Number(form.quantity),
-        minimumStock: Number(form.minimumStock),
-      });
-
+      await api.post("/products", payload);
+      showSuccess("Product added successfully!");
     }
 
     setOpenForm(false);
-
     setForm(initialForm);
-
     setIsEdit(false);
+    setSelectedProduct(null);
 
-    fetchProducts();
+    await fetchProducts();
+  } catch (error) {
+    console.error("Product save failed:", error);
 
-  };
+    showError(
+      error.response?.data?.message ||
+        "Unable to save product."
+    );
+  }
+};
 
   const handleEdit = (product) => {
 
@@ -106,14 +114,28 @@ function Products() {
   };
 
   const handleDelete = async () => {
+  if (!selectedProduct) {
+    return;
+  }
 
+  try {
     await api.delete(`/products/${selectedProduct.id}`);
 
+    showSuccess("Product deleted successfully!");
+
     setDeleteOpen(false);
+    setSelectedProduct(null);
 
-    fetchProducts();
+    await fetchProducts();
+  } catch (error) {
+    console.error("Product delete failed:", error);
 
-  };
+    showError(
+      error.response?.data?.message ||
+        "Unable to delete product."
+    );
+  }
+};
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
@@ -157,7 +179,12 @@ function Products() {
         onClose={() => setDeleteOpen(false)}
         onDelete={handleDelete}
       />
-
+<AppSnackbar
+  open={snackbar.open}
+  message={snackbar.message}
+  severity={snackbar.severity}
+  onClose={closeSnackbar}
+/>
     </Box>
   );
 }

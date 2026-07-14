@@ -24,6 +24,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import PurchaseStats from "../../components/purchases/PurchaseStats";
 import { exportPurchaseInvoicePdf } from "../../components/export/PdfExporter";
 import { exportPurchasesExcel } from "../../components/export/ExcelExporter";
+import AppSnackbar from "../../components/common/AppSnackbar";
+import useAppSnackbar from "../../hooks/useAppSnackbar";
 
 const emptyItem = {
   productId: "",
@@ -36,7 +38,6 @@ function Purchases() {
   const [suppliers, setSuppliers] = useState([]);
   const [products, setProducts] = useState([]);
   const [purchases, setPurchases] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -46,9 +47,14 @@ function Purchases() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
-  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
 const [returnPurchase, setReturnPurchase] = useState(null);
+const {
+  snackbar,
+  showSuccess,
+  showError,
+  closeSnackbar,
+} = useAppSnackbar();
   const [form, setForm] = useState({
     supplierId: "",
     invoiceNumber: "",
@@ -111,7 +117,7 @@ const [returnPurchase, setReturnPurchase] = useState(null);
         })),
       });
 
-      setSnackbarOpen(true);
+      showSuccess("Purchase saved successfully!");
       setOpen(false);
 
       setForm({
@@ -123,11 +129,10 @@ const [returnPurchase, setReturnPurchase] = useState(null);
       fetchProducts();
       fetchPurchases();
     } catch (error) {
-      alert(
+      showError(
         error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Purchase save failed"
-      );
+  "Unable to save purchase."
+);
     }
   };
   const handleViewPurchase = async (id) => {
@@ -197,7 +202,7 @@ const handleSaveReturn = async (data) => {
 
   fetchPurchases();
   fetchProducts();
-  setDeleteSnackbarOpen(true);
+  showSuccess("Purchase deleted and stock rolled back!");
 };
 const handleOpenReturn = async (purchase) => {
   const res = await api.get(`/purchases/${purchase.id}`);
@@ -227,13 +232,14 @@ const handleSaveReturn = async (data) => {
 
       <PurchaseSummaryCard />
       <PurchaseStats purchases={purchases} />
-      <Button
-  variant="outlined"
-  onClick={() => exportPurchasesExcel(filteredPurchases)}
-  sx={{ mb: 2 }}
->
-  Export Excel
-</Button>
+      <Box className="mobile-export-row">
+  <Button
+    variant="outlined"
+    onClick={() => exportPurchasesExcel(filteredPurchases)}
+  >
+    Export Excel
+  </Button>
+</Box>
       <TextField
   fullWidth
   size="small"
@@ -261,8 +267,9 @@ const handleSaveReturn = async (data) => {
     ),
   }}
 />
-<Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+<Box className="mobile-filter-row">
   <TextField
+  fullWidth
   className="erp-filter-date"
   label="Start Date"
   type="date"
@@ -278,6 +285,7 @@ const handleSaveReturn = async (data) => {
 />
 
   <TextField
+  fullWidth
   className="erp-filter-date"
   label="End Date"
   type="date"
@@ -293,11 +301,15 @@ const handleSaveReturn = async (data) => {
 />
   <TextField
   select
+  fullWidth
   label="Supplier"
   size="small"
   value={supplierFilter}
   onChange={(e) => setSupplierFilter(e.target.value)}
-  sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 180 }}
+  sx={{
+    bgcolor: "text.primary",
+    borderRadius: 1,
+  }}
 >
   <MenuItem value="">All Suppliers</MenuItem>
   {suppliers.map((supplier) => (
@@ -309,17 +321,19 @@ const handleSaveReturn = async (data) => {
 
 <TextField
   select
+  fullWidth
   label="Status"
   size="small"
   value={statusFilter}
   onChange={(e) => setStatusFilter(e.target.value)}
-  sx={{ bgcolor: "text.primary", borderRadius: 1, minWidth: 160 }}
+  sx={{ bgcolor: "text.primary", borderRadius: 1}}
 >
   <MenuItem value="">All Status</MenuItem>
   <MenuItem value="COMPLETED">COMPLETED</MenuItem>
 </TextField>
 
 <Button
+ className="mobile-clear-btn"
   variant="outlined"
   onClick={() => {
     setSearch("");
@@ -383,24 +397,12 @@ const handleSaveReturn = async (data) => {
   onSave={handleSaveReturn}
 />
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
-          Purchase saved successfully!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-  open={deleteSnackbarOpen}
-  autoHideDuration={3000}
-  onClose={() => setDeleteSnackbarOpen(false)}
->
-  <Alert severity="success" onClose={() => setDeleteSnackbarOpen(false)}>
-    Purchase deleted and stock rolled back!
-  </Alert>
-</Snackbar>
+      <AppSnackbar
+  open={snackbar.open}
+  message={snackbar.message}
+  severity={snackbar.severity}
+  onClose={closeSnackbar}
+/>
     </Box>
   );
 }

@@ -1,11 +1,10 @@
-﻿import { Card, CardContent, Grid, Typography } from "@mui/material";
+﻿import { Box, Card, CardContent, Typography } from "@mui/material";
 
 function PurchaseStats({ purchases }) {
-
   const totalPurchases = purchases.length;
 
   const totalAmount = purchases.reduce(
-    (sum, purchase) => sum + Number(purchase.totalAmount),
+    (sum, purchase) => sum + Number(purchase.totalAmount || 0),
     0
   );
 
@@ -24,7 +23,7 @@ function PurchaseStats({ purchases }) {
     },
     {
       title: "Total Amount",
-      value: `₹${totalAmount.toLocaleString()}`,
+      value: `₹${totalAmount.toLocaleString("en-IN")}`,
       color: "#16a34a",
     },
     {
@@ -35,45 +34,28 @@ function PurchaseStats({ purchases }) {
   ];
 
   return (
-    <Grid container spacing={2} sx={{ mt: 1, mb: 3 }}>
-
+    <Box className="purchase-stats-grid">
       {cards.map((card) => (
+        <Card
+          key={card.title}
+          className="purchase-summary-card"
+        >
+          <CardContent className="purchase-summary-content">
+            <Typography className="purchase-summary-title">
+              {card.title}
+            </Typography>
 
-        <Grid item xs={12} md={4} key={card.title}>
-
-          <Card
-            sx={{
-              bgcolor: "background.paper",
-              border: "1px solid", borderColor: "divider",
-              color: "text.primary",
-            }}
-          >
-
-            <CardContent>
-
-              <Typography color="#94a3b8">
-                {card.title}
-              </Typography>
-
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-                sx={{ color: card.color }}
-              >
-                {card.value}
-              </Typography>
-
-            </CardContent>
-
-          </Card>
-
-        </Grid>
-
+            <Typography
+              className="purchase-summary-value"
+              sx={{ color: card.color }}
+            >
+              {card.value}
+            </Typography>
+          </CardContent>
+        </Card>
       ))}
-
-    </Grid>
+    </Box>
   );
 }
 
 export default PurchaseStats;
-

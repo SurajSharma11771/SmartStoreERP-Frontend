@@ -100,36 +100,64 @@ function Sales() {
   };
 
   const handleSave = async () => {
-    try {
-      await api.post("/sales", {
-        customerId: Number(form.customerId),
-        invoiceNumber: form.invoiceNumber,
-        items: form.items.map((item) => ({
-          productId: Number(item.productId),
-          quantity: Number(item.quantity),
-          sellingPrice: Number(item.sellingPrice),
-        })),
-      });
+  if (!form.invoiceNumber.trim()) {
+    showError("Invoice number is required.");
+    return;
+  }
 
-      showSuccess("Sale saved successfully!");
+  if (!form.customerId) {
+    showError("Please select a customer.");
+    return;
+  }
 
-      setOpen(false);
-      setForm({
-        customerId: "",
-        invoiceNumber: "",
-        items: [{ ...emptyItem }],
-      });
+  if (
+    form.items.length === 0 ||
+    form.items.some(
+      (item) =>
+        !item.productId ||
+        Number(item.quantity) <= 0 ||
+        Number(item.sellingPrice) <= 0
+    )
+  ) {
+    showError(
+      "Please complete all sale item fields."
+    );
+    return;
+  }
 
-      fetchSales();
-      fetchProducts();
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Sale save failed"
-      );
-    }
-  };
+  try {
+    await api.post("/sales", {
+      customerId: Number(form.customerId),
+      invoiceNumber: form.invoiceNumber.trim(),
+      items: form.items.map((item) => ({
+        productId: Number(item.productId),
+        quantity: Number(item.quantity),
+        sellingPrice: Number(item.sellingPrice),
+      })),
+    });
+
+    showSuccess("Sale saved successfully!");
+
+    setOpen(false);
+
+    setForm({
+      customerId: "",
+      invoiceNumber: "",
+      items: [{ ...emptyItem }],
+    });
+
+    fetchSales();
+    fetchProducts();
+  } catch (error) {
+    console.error("Sale save failed:", error);
+
+    showError(
+      error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Sale save failed."
+    );
+  }
+};
 
   const handleDeleteSale = async (sale) => {
     const confirmDelete = window.confirm(
@@ -203,7 +231,9 @@ function Sales() {
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
-
+const activeProducts = products.filter(
+  (product) => product.status !== false
+);
   return (
     <Box>
       <PageHeader
@@ -346,18 +376,18 @@ function Sales() {
       />
 
       <SaleForm
-        open={open}
-        onClose={() => setOpen(false)}
-        customers={customers}
-        products={products}
-        form={form}
-        handleChange={handleChange}
-        handleItemChange={handleItemChange}
-        addItem={addItem}
-        removeItem={removeItem}
-        calculateTotal={calculateTotal}
-        handleSave={handleSave}
-      />
+  open={open}
+  onClose={() => setOpen(false)}
+  customers={customers}
+  products={activeProducts}
+  form={form}
+  handleChange={handleChange}
+  handleItemChange={handleItemChange}
+  addItem={addItem}
+  removeItem={removeItem}
+  calculateTotal={calculateTotal}
+  handleSave={handleSave}
+/>
 
       <SaleDetailsDialog
         open={detailsOpen}

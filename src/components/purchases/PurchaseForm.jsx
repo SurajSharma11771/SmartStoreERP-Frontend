@@ -125,6 +125,7 @@ function PurchaseForm({
           <TextField
             fullWidth
             size="small"
+             required
             label="Invoice Number"
             name="invoiceNumber"
             value={form.invoiceNumber}

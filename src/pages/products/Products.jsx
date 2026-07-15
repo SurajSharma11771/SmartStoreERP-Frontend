@@ -1,5 +1,19 @@
-﻿import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+﻿import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 
 import api from "../../services/api";
 
@@ -8,10 +22,10 @@ import SearchToolbar from "../../components/common/SearchToolbar";
 
 import ProductTable from "../../components/products/ProductTable";
 import ProductForm from "../../components/products/ProductForm";
-import DeleteProductDialog from "../../components/products/DeleteProductDialog";
+
 import AppSnackbar from "../../components/common/AppSnackbar";
 import useAppSnackbar from "../../hooks/useAppSnackbar";
-   
+
 const initialForm = {
   name: "",
   sku: "",
@@ -24,130 +38,260 @@ const initialForm = {
 };
 
 function Products() {
-
   const [products, setProducts] = useState([]);
-
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] =
+    useState("ALL");
 
   const [openForm, setOpenForm] = useState(false);
 
-  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [statusDialogOpen, setStatusDialogOpen] =
+    useState(false);
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const {
-  snackbar,
-  showSuccess,
-  showError,
-  closeSnackbar,
-} = useAppSnackbar();
+  const [deleteDialogOpen, setDeleteDialogOpen] =
+    useState(false);
+
+  const [selectedProduct, setSelectedProduct] =
+    useState(null);
 
   const [form, setForm] = useState(initialForm);
-
   const [isEdit, setIsEdit] = useState(false);
 
+  const {
+    snackbar,
+    showSuccess,
+    showError,
+    closeSnackbar,
+  } = useAppSnackbar();
+
   const fetchProducts = async () => {
+    try {
+      const res = await api.get("/products");
+      setProducts(res.data.data);
+    } catch (error) {
+      console.error(
+        "Product loading failed:",
+        error
+      );
 
-    const res = await api.get("/products");
-
-    setProducts(res.data.data);
-
+      showError("Unable to load products.");
+    }
   };
 
   useEffect(() => {
-
     fetchProducts();
-
   }, []);
 
- const handleSave = async () => {
-  try {
-    const payload = {
-      ...form,
-      sellingPrice: Number(form.sellingPrice),
-      costPrice: Number(form.costPrice),
-      quantity: Number(form.quantity),
-      minimumStock: Number(form.minimumStock),
-    };
+  const handleSave = async () => {
+    try {
+      const payload = {
+        ...form,
+        sellingPrice: Number(form.sellingPrice),
+        costPrice: Number(form.costPrice),
+        quantity: Number(form.quantity),
+        minimumStock: Number(form.minimumStock),
+      };
 
-    if (isEdit) {
-      await api.put(`/products/${selectedProduct.id}`, payload);
-      showSuccess("Product updated successfully!");
-    } else {
-      await api.post("/products", payload);
-      showSuccess("Product added successfully!");
+      if (isEdit) {
+        await api.put(
+          `/products/${selectedProduct.id}`,
+          payload
+        );
+
+        showSuccess(
+          "Product updated successfully!"
+        );
+      } else {
+        await api.post("/products", payload);
+
+        showSuccess(
+          "Product added successfully!"
+        );
+      }
+
+      setOpenForm(false);
+      setForm(initialForm);
+      setIsEdit(false);
+      setSelectedProduct(null);
+
+      await fetchProducts();
+    } catch (error) {
+      console.error(
+        "Product save failed:",
+        error
+      );
+
+      showError(
+        error.response?.data?.message ||
+          "Unable to save product."
+      );
     }
-
-    setOpenForm(false);
-    setForm(initialForm);
-    setIsEdit(false);
-    setSelectedProduct(null);
-
-    await fetchProducts();
-  } catch (error) {
-    console.error("Product save failed:", error);
-
-    showError(
-      error.response?.data?.message ||
-        "Unable to save product."
-    );
-  }
-};
+  };
 
   const handleEdit = (product) => {
-
     setSelectedProduct(product);
 
-    setForm(product);
+    setForm({
+      name: product.name || "",
+      sku: product.sku || "",
+      barcode: product.barcode || "",
+      description: product.description || "",
+      sellingPrice:
+        product.sellingPrice ?? "",
+      costPrice: product.costPrice ?? "",
+      quantity: product.quantity ?? "",
+      minimumStock:
+        product.minimumStock ?? "",
+      status: product.status,
+    });
 
     setIsEdit(true);
-
     setOpenForm(true);
+  };
 
+  const handleStatusClick = (product) => {
+    setSelectedProduct(product);
+    setStatusDialogOpen(true);
+  };
+
+  const handleStatusChange = async () => {
+    if (!selectedProduct) return;
+
+    const currentlyActive =
+      selectedProduct.status !== false;
+
+    const newStatus = !currentlyActive;
+
+    try {
+      await api.patch(
+        `/products/${selectedProduct.id}/status`,
+        null,
+        {
+          params: {
+            active: newStatus,
+          },
+        }
+      );
+
+      showSuccess(
+        newStatus
+          ? "Product activated successfully!"
+          : "Product deactivated successfully!"
+      );
+
+      setStatusDialogOpen(false);
+      setSelectedProduct(null);
+
+      await fetchProducts();
+    } catch (error) {
+      console.error(
+        "Product status update failed:",
+        error
+      );
+
+      showError(
+        error.response?.data?.message ||
+          "Unable to update product status."
+      );
+    }
   };
 
   const handleDeleteClick = (product) => {
-
     setSelectedProduct(product);
-
-    setDeleteOpen(true);
-
+    setDeleteDialogOpen(true);
   };
 
   const handleDelete = async () => {
-  if (!selectedProduct) {
-    return;
-  }
+    if (!selectedProduct) return;
 
-  try {
-    await api.delete(`/products/${selectedProduct.id}`);
+    try {
+      await api.delete(
+        `/products/${selectedProduct.id}`
+      );
 
-    showSuccess("Product deleted successfully!");
+      showSuccess(
+        "Product permanently deleted successfully!"
+      );
 
-    setDeleteOpen(false);
-    setSelectedProduct(null);
+      setDeleteDialogOpen(false);
+      setSelectedProduct(null);
 
-    await fetchProducts();
-  } catch (error) {
-    console.error("Product delete failed:", error);
+      await fetchProducts();
+    } catch (error) {
+      console.error(
+        "Product delete failed:",
+        error
+      );
 
-    showError(
-      error.response?.data?.message ||
-        "Unable to delete product."
-    );
-  }
-};
+      showError(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          "This product cannot be deleted. Deactivate it instead."
+      );
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
-  );
-    return (
+      setDeleteDialogOpen(false);
+      setSelectedProduct(null);
+    }
+  };
+
+  const filteredProducts = useMemo(() => {
+    const searchValue = search.toLowerCase();
+
+    return [...products]
+      .filter((product) => {
+        const matchesSearch =
+          String(product.name || "")
+            .toLowerCase()
+            .includes(searchValue) ||
+          String(product.sku || "")
+            .toLowerCase()
+            .includes(searchValue);
+
+        const isActive =
+          product.status !== false;
+
+        const matchesStatus =
+          statusFilter === "ALL" ||
+          (
+            statusFilter === "ACTIVE" &&
+            isActive
+          ) ||
+          (
+            statusFilter === "INACTIVE" &&
+            !isActive
+          );
+
+        return matchesSearch && matchesStatus;
+      })
+      .sort((first, second) => {
+        const firstActive =
+          first.status !== false;
+
+        const secondActive =
+          second.status !== false;
+
+        if (firstActive === secondActive) {
+          return (
+            Number(second.id) -
+            Number(first.id)
+          );
+        }
+
+        return firstActive ? -1 : 1;
+      });
+  }, [products, search, statusFilter]);
+
+  const selectedProductActive =
+    selectedProduct?.status !== false;
+
+  return (
     <Box>
-
       <PageHeader
         title="Products"
         buttonText="Add Product"
         onButtonClick={() => {
           setForm(initialForm);
+          setSelectedProduct(null);
           setIsEdit(false);
           setOpenForm(true);
         }}
@@ -159,9 +303,51 @@ function Products() {
         placeholder="Search Products..."
       />
 
+      <Box
+        sx={{
+          mb: 2,
+          display: "flex",
+          justifyContent: {
+            xs: "stretch",
+            sm: "flex-start",
+          },
+        }}
+      >
+        <TextField
+          select
+          fullWidth
+          size="small"
+          label="Product Status"
+          value={statusFilter}
+          onChange={(event) =>
+            setStatusFilter(event.target.value)
+          }
+          sx={{
+            maxWidth: {
+              xs: "100%",
+              sm: 220,
+            },
+            bgcolor: "background.paper",
+          }}
+        >
+          <MenuItem value="ALL">
+            All Products
+          </MenuItem>
+
+          <MenuItem value="ACTIVE">
+            Active Products
+          </MenuItem>
+
+          <MenuItem value="INACTIVE">
+            Inactive Products
+          </MenuItem>
+        </TextField>
+      </Box>
+
       <ProductTable
         products={filteredProducts}
         onEdit={handleEdit}
+        onStatusChange={handleStatusClick}
         onDelete={handleDeleteClick}
       />
 
@@ -174,17 +360,100 @@ function Products() {
         isEdit={isEdit}
       />
 
-      <DeleteProductDialog
-        open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
-        onDelete={handleDelete}
+      <Dialog
+        open={statusDialogOpen}
+        onClose={() =>
+          setStatusDialogOpen(false)
+        }
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>
+          {selectedProductActive
+            ? "Deactivate Product"
+            : "Activate Product"}
+        </DialogTitle>
+
+        <DialogContent>
+          {selectedProductActive
+            ? `Deactivate "${selectedProduct?.name}"? This product will become unavailable for new transactions.`
+            : `Activate "${selectedProduct?.name}"? This product will become available for new transactions.`}
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            onClick={() =>
+              setStatusDialogOpen(false)
+            }
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: selectedProductActive
+                ? "#dc2626"
+                : "#16a34a",
+
+              "&:hover": {
+                bgcolor: selectedProductActive
+                  ? "#b91c1c"
+                  : "#15803d",
+              },
+            }}
+            onClick={handleStatusChange}
+          >
+            {selectedProductActive
+              ? "Deactivate"
+              : "Activate"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() =>
+          setDeleteDialogOpen(false)
+        }
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>
+          Permanently Delete Product
+        </DialogTitle>
+
+        <DialogContent>
+          Delete "{selectedProduct?.name}" permanently?
+          This is only allowed when the product has no
+          sales, purchase, or stock-adjustment history.
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            onClick={() =>
+              setDeleteDialogOpen(false)
+            }
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDelete}
+          >
+            Delete Permanently
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <AppSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
       />
-<AppSnackbar
-  open={snackbar.open}
-  message={snackbar.message}
-  severity={snackbar.severity}
-  onClose={closeSnackbar}
-/>
     </Box>
   );
 }

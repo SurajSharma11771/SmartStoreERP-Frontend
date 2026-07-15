@@ -106,10 +106,35 @@ const {
   };
 
   const handleSave = async () => {
+    if (!form.invoiceNumber.trim()) {
+    showError("Invoice number is required.");
+    return;
+  }
+
+  if (!form.supplierId) {
+    showError("Please select a supplier.");
+    return;
+  }
+
+  if (
+    form.items.length === 0 ||
+    form.items.some(
+      (item) =>
+        !item.productId ||
+        Number(item.quantity) <= 0 ||
+        Number(item.purchasePrice) <= 0
+    )
+  ) {
+    showError(
+      "Please complete all purchase item fields."
+    );
+    return;
+  }
+
     try {
       await api.post("/purchases", {
         supplierId: Number(form.supplierId),
-        invoiceNumber: form.invoiceNumber,
+        invoiceNumber: form.invoiceNumber.trim(),
         items: form.items.map((item) => ({
           productId: Number(item.productId),
           quantity: Number(item.quantity),
@@ -172,6 +197,9 @@ const filteredPurchases = purchases.filter((purchase) => {
 const paginatedPurchases = filteredPurchases.slice(
   page * rowsPerPage,
   page * rowsPerPage + rowsPerPage
+);
+const activeProducts = products.filter(
+  (product) => product.status !== false
 );
 
 const handleDeletePurchase = async (purchase) => {
@@ -376,7 +404,7 @@ const handleSaveReturn = async (data) => {
         open={open}
         onClose={() => setOpen(false)}
         suppliers={suppliers}
-        products={products}
+        products={activeProducts}
         form={form}
         handleChange={handleChange}
         handleItemChange={handleItemChange}

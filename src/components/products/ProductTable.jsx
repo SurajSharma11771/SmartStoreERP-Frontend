@@ -25,7 +25,9 @@ function ProductTable({
   onDelete,
 }) {
   const formatCurrency = (value) =>
-    `₹${Number(value || 0).toLocaleString("en-IN")}`;
+    `₹${Number(value || 0).toLocaleString(
+      "en-IN"
+    )}`;
 
   return (
     <>
@@ -40,11 +42,12 @@ function ProductTable({
             overflowX: "auto",
           }}
         >
-          <Table sx={{ minWidth: 940 }}>
+          <Table sx={{ minWidth: 1080 }}>
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>SKU</TableCell>
+                <TableCell>Category</TableCell>
                 <TableCell>Selling</TableCell>
                 <TableCell>Cost</TableCell>
                 <TableCell>Quantity</TableCell>
@@ -54,106 +57,150 @@ function ProductTable({
             </TableHead>
 
             <TableBody>
-              {products.map((product) => {
-                const isActive =
-                  product.status !== false;
-
-                return (
-                  <TableRow
-                    key={product.id}
-                    hover
-                    sx={{
-                      opacity: isActive ? 1 : 0.55,
-                      bgcolor: isActive
-                        ? "transparent"
-                        : "action.hover",
-                    }}
+              {products.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={8}
+                    align="center"
                   >
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.sku}</TableCell>
+                    No products found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                products.map((product) => {
+                  const isActive =
+                    product.status !== false;
 
-                    <TableCell>
-                      {formatCurrency(
-                        product.sellingPrice
-                      )}
-                    </TableCell>
+                  return (
+                    <TableRow
+                      key={product.id}
+                      hover
+                      sx={{
+                        opacity: isActive
+                          ? 1
+                          : 0.55,
 
-                    <TableCell>
-                      {formatCurrency(product.costPrice)}
-                    </TableCell>
+                        bgcolor: isActive
+                          ? "transparent"
+                          : "action.hover",
+                      }}
+                    >
+                      <TableCell>
+                        {product.name}
+                      </TableCell>
 
-                    <TableCell>
-                      {product.quantity}
-                    </TableCell>
+                      <TableCell>
+                        {product.sku}
+                      </TableCell>
 
-                    <TableCell>
-                      <Chip
-                        size="small"
-                        color={
-                          isActive ? "success" : "default"
-                        }
-                        label={
-                          isActive ? "Active" : "Inactive"
-                        }
-                      />
-                    </TableCell>
-
-                    <TableCell>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexWrap: "wrap",
-                          gap: 1,
-                        }}
-                      >
-                        <IconButton
-                          color="primary"
-                          onClick={() => onEdit(product)}
-                          disabled={!isActive}
-                          aria-label="Edit product"
-                        >
-                          <EditIcon />
-                        </IconButton>
-
-                        <Button
+                      <TableCell>
+                        <Chip
                           size="small"
-                          variant={
-                            isActive
-                              ? "outlined"
-                              : "contained"
+                          variant="outlined"
+                          label={
+                            product.categoryName ||
+                            "Uncategorized"
                           }
+                        />
+                      </TableCell>
+
+                      <TableCell>
+                        {formatCurrency(
+                          product.sellingPrice
+                        )}
+                      </TableCell>
+
+                      <TableCell>
+                        {formatCurrency(
+                          product.costPrice
+                        )}
+                      </TableCell>
+
+                      <TableCell>
+                        {product.quantity}
+                      </TableCell>
+
+                      <TableCell>
+                        <Chip
+                          size="small"
                           color={
                             isActive
-                              ? "error"
-                              : "success"
+                              ? "success"
+                              : "default"
                           }
-                          startIcon={
+                          label={
                             isActive
-                              ? <BlockOutlinedIcon />
-                              : <CheckCircleIcon />
+                              ? "Active"
+                              : "Inactive"
                           }
-                          onClick={() =>
-                            onStatusChange(product)
-                          }
-                        >
-                          {isActive
-                            ? "Deactivate"
-                            : "Activate"}
-                        </Button>
+                        />
+                      </TableCell>
 
-                        <IconButton
-                          color="error"
-                          onClick={() => onDelete(product)}
-                          aria-label="Permanently delete product"
+                      <TableCell>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                            gap: 1,
+                          }}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                          <IconButton
+                            color="primary"
+                            onClick={() =>
+                              onEdit(product)
+                            }
+                            disabled={!isActive}
+                            aria-label="Edit product"
+                          >
+                            <EditIcon />
+                          </IconButton>
+
+                          <Button
+                            size="small"
+                            variant={
+                              isActive
+                                ? "outlined"
+                                : "contained"
+                            }
+                            color={
+                              isActive
+                                ? "error"
+                                : "success"
+                            }
+                            startIcon={
+                              isActive
+                                ? (
+                                  <BlockOutlinedIcon />
+                                )
+                                : (
+                                  <CheckCircleIcon />
+                                )
+                            }
+                            onClick={() =>
+                              onStatusChange(product)
+                            }
+                          >
+                            {isActive
+                              ? "Deactivate"
+                              : "Activate"}
+                          </Button>
+
+                          <IconButton
+                            color="error"
+                            onClick={() =>
+                              onDelete(product)
+                            }
+                            aria-label="Permanently delete product"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -183,10 +230,14 @@ function ProductTable({
                 className="mobile-data-card"
                 elevation={0}
                 sx={{
-                  opacity: isActive ? 1 : 0.58,
+                  opacity: isActive
+                    ? 1
+                    : 0.58,
+
                   bgcolor: isActive
                     ? "background.paper"
                     : "action.hover",
+
                   filter: isActive
                     ? "none"
                     : "grayscale(0.3)",
@@ -206,10 +257,25 @@ function ProductTable({
                   <Chip
                     size="small"
                     color={
-                      isActive ? "success" : "default"
+                      isActive
+                        ? "success"
+                        : "default"
                     }
                     label={
-                      isActive ? "Active" : "Inactive"
+                      isActive
+                        ? "Active"
+                        : "Inactive"
+                    }
+                  />
+                </Box>
+
+                <Box sx={{ mb: 1.5 }}>
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    label={
+                      product.categoryName ||
+                      "Uncategorized"
                     }
                   />
                 </Box>
@@ -233,7 +299,9 @@ function ProductTable({
                     </Typography>
 
                     <Typography className="mobile-data-value">
-                      {formatCurrency(product.costPrice)}
+                      {formatCurrency(
+                        product.costPrice
+                      )}
                     </Typography>
                   </Box>
 
@@ -261,7 +329,9 @@ function ProductTable({
                 <Box className="mobile-data-actions">
                   <IconButton
                     color="primary"
-                    onClick={() => onEdit(product)}
+                    onClick={() =>
+                      onEdit(product)
+                    }
                     disabled={!isActive}
                     aria-label="Edit product"
                   >
@@ -276,12 +346,18 @@ function ProductTable({
                         : "contained"
                     }
                     color={
-                      isActive ? "error" : "success"
+                      isActive
+                        ? "error"
+                        : "success"
                     }
                     startIcon={
                       isActive
-                        ? <BlockOutlinedIcon />
-                        : <CheckCircleIcon />
+                        ? (
+                          <BlockOutlinedIcon />
+                        )
+                        : (
+                          <CheckCircleIcon />
+                        )
                     }
                     onClick={() =>
                       onStatusChange(product)
@@ -294,7 +370,9 @@ function ProductTable({
 
                   <IconButton
                     color="error"
-                    onClick={() => onDelete(product)}
+                    onClick={() =>
+                      onDelete(product)
+                    }
                     aria-label="Permanently delete product"
                   >
                     <DeleteIcon />

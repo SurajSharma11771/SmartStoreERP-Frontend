@@ -1,439 +1,569 @@
-﻿import { useEffect, useState } from "react";
+﻿import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-
-import api from "../../services/api";
-import PageHeader from "../../components/common/PageHeader";
-
-import PurchaseSummaryCard from "../../components/purchases/PurchaseSummaryCard";
-import PurchaseHistoryTable from "../../components/purchases/PurchaseHistoryTable";
-import PurchaseForm from "../../components/purchases/PurchaseForm";
-import PurchaseDetailsDialog from "../../components/purchases/PurchaseDetailsDialog";
-import PurchaseReturnDialog from "../../components/purchases/PurchaseReturnDialog";
 import {
-  Alert,
   Box,
-  Snackbar,
-  TextField,
-  TablePagination,
-  MenuItem,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  MenuItem,
+  TextField,
 } from "@mui/material";
 
-import SearchIcon from "@mui/icons-material/Search";
-import InputAdornment from "@mui/material/InputAdornment";
-import PurchaseStats from "../../components/purchases/PurchaseStats";
-import { exportPurchaseInvoicePdf } from "../../components/export/PdfExporter";
-import { exportPurchasesExcel } from "../../components/export/ExcelExporter";
+import api from "../../services/api";
+
+import PageHeader from "../../components/common/PageHeader";
+import SearchToolbar from "../../components/common/SearchToolbar";
+
+import ProductTable from "../../components/products/ProductTable";
+import ProductForm from "../../components/products/ProductForm";
+
 import AppSnackbar from "../../components/common/AppSnackbar";
 import useAppSnackbar from "../../hooks/useAppSnackbar";
 
-const emptyItem = {
-  productId: "",
+const initialForm = {
+  name: "",
+  sku: "",
+  barcode: "",
+  description: "",
+  sellingPrice: "",
+  costPrice: "",
   quantity: "",
-  purchasePrice: "",
+  minimumStock: "",
+  categoryId: "",
 };
 
-function Purchases() {
-  const [open, setOpen] = useState(false);
-  const [suppliers, setSuppliers] = useState([]);
+function Products() {
   const [products, setProducts] = useState([]);
-  const [purchases, setPurchases] = useState([]);
-  const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [supplierFilter, setSupplierFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedPurchase, setSelectedPurchase] = useState(null);
-  const [returnOpen, setReturnOpen] = useState(false);
-const [returnPurchase, setReturnPurchase] = useState(null);
-const {
-  snackbar,
-  showSuccess,
-  showError,
-  closeSnackbar,
-} = useAppSnackbar();
-  const [form, setForm] = useState({
-    supplierId: "",
-    invoiceNumber: "",
-    items: [{ ...emptyItem }],
-  });
+  const [categories, setCategories] = useState([]);
 
-  const fetchPurchases = () => {
-    api.get("/purchases").then((res) => setPurchases(res.data.data));
+  const [search, setSearch] = useState("");
+
+  const [statusFilter, setStatusFilter] =
+    useState("ALL");
+
+  const [categoryFilter, setCategoryFilter] =
+    useState("ALL");
+
+  const [openForm, setOpenForm] = useState(false);
+
+  const [statusDialogOpen, setStatusDialogOpen] =
+    useState(false);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] =
+    useState(false);
+
+  const [selectedProduct, setSelectedProduct] =
+    useState(null);
+
+  const [form, setForm] = useState(initialForm);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const {
+    snackbar,
+    showSuccess,
+    showError,
+    closeSnackbar,
+  } = useAppSnackbar();
+
+  const fetchProducts = async () => {
+    try {
+      const response = await api.get("/products");
+
+      setProducts(response.data.data || []);
+    } catch (error) {
+      console.error(
+        "Product loading failed:",
+        error
+      );
+
+      showError("Unable to load products.");
+    }
   };
 
-  const fetchProducts = () => {
-    api.get("/products").then((res) => setProducts(res.data.data));
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get("/categories");
+
+      setCategories(response.data.data || []);
+    } catch (error) {
+      console.error(
+        "Category loading failed:",
+        error
+      );
+
+      showError("Unable to load categories.");
+    }
   };
 
   useEffect(() => {
-    api.get("/suppliers").then((res) => setSuppliers(res.data.data));
     fetchProducts();
-    fetchPurchases();
+    fetchCategories();
   }, []);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleItemChange = (index, field, value) => {
-    const updatedItems = [...form.items];
-    updatedItems[index][field] = value;
-    setForm({ ...form, items: updatedItems });
-  };
-
-  const addItem = () => {
-    setForm({
-      ...form,
-      items: [...form.items, { ...emptyItem }],
-    });
-  };
-
-  const removeItem = (index) => {
-    const updatedItems = form.items.filter((_, i) => i !== index);
-    setForm({ ...form, items: updatedItems });
-  };
-
-  const calculateTotal = () => {
-    return form.items.reduce((total, item) => {
-      const qty = Number(item.quantity || 0);
-      const price = Number(item.purchasePrice || 0);
-      return total + qty * price;
-    }, 0);
-  };
+  const activeCategories = useMemo(() => {
+    return categories.filter(
+      (category) => category.status !== false
+    );
+  }, [categories]);
 
   const handleSave = async () => {
-    if (!form.invoiceNumber.trim()) {
-    showError("Invoice number is required.");
-    return;
-  }
-
-  if (!form.supplierId) {
-    showError("Please select a supplier.");
-    return;
-  }
-
-  if (
-    form.items.length === 0 ||
-    form.items.some(
-      (item) =>
-        !item.productId ||
-        Number(item.quantity) <= 0 ||
-        Number(item.purchasePrice) <= 0
-    )
-  ) {
-    showError(
-      "Please complete all purchase item fields."
-    );
-    return;
-  }
+    if (!form.categoryId) {
+      showError("Please select a category.");
+      return;
+    }
 
     try {
-      await api.post("/purchases", {
-        supplierId: Number(form.supplierId),
-        invoiceNumber: form.invoiceNumber.trim(),
-        items: form.items.map((item) => ({
-          productId: Number(item.productId),
-          quantity: Number(item.quantity),
-          purchasePrice: Number(item.purchasePrice),
-        })),
-      });
+      const payload = {
+        name: form.name,
+        sku: form.sku,
+        barcode: form.barcode || null,
+        description: form.description || null,
+        sellingPrice: Number(form.sellingPrice),
+        costPrice: Number(form.costPrice),
+        quantity: Number(form.quantity),
+        minimumStock: Number(form.minimumStock),
+        categoryId: Number(form.categoryId),
+      };
 
-      showSuccess("Purchase saved successfully!");
-      setOpen(false);
+      if (isEdit) {
+        payload.status =
+          form.status !== false;
 
-      setForm({
-        supplierId: "",
-        invoiceNumber: "",
-        items: [{ ...emptyItem }],
-      });
+        await api.put(
+          `/products/${selectedProduct.id}`,
+          payload
+        );
 
-      fetchProducts();
-      fetchPurchases();
+        showSuccess(
+          "Product updated successfully!"
+        );
+      } else {
+        await api.post("/products", payload);
+
+        showSuccess(
+          "Product added successfully!"
+        );
+      }
+
+      setOpenForm(false);
+      setForm(initialForm);
+      setIsEdit(false);
+      setSelectedProduct(null);
+
+      await fetchProducts();
     } catch (error) {
+      console.error(
+        "Product save failed:",
+        error
+      );
+
       showError(
         error.response?.data?.message ||
-  "Unable to save purchase."
-);
+          "Unable to save product."
+      );
     }
   };
-  const handleViewPurchase = async (id) => {
-  const res = await api.get(`/purchases/${id}`);
-  setSelectedPurchase(res.data.data);
-  setDetailsOpen(true);
-};
-const handleDownloadPdf = async (id) => {
-  const res = await api.get(`/purchases/${id}`);
-  exportPurchaseInvoicePdf(res.data.data);
-};
-const filteredPurchases = purchases.filter((purchase) => {
-  const matchesSearch =
-    purchase.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
-    purchase.supplierName.toLowerCase().includes(search.toLowerCase());
 
-  const purchaseDate = new Date(purchase.purchaseDate);
-  const matchesStartDate = startDate ? purchaseDate >= new Date(startDate) : true;
-  const matchesEndDate = endDate ? purchaseDate <= new Date(endDate) : true;
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
 
-  const matchesSupplier = supplierFilter
-    ? purchase.supplierName === supplierFilter
-    : true;
+    setForm({
+      name: product.name || "",
+      sku: product.sku || "",
+      barcode: product.barcode || "",
+      description: product.description || "",
+      sellingPrice:
+        product.sellingPrice ?? "",
+      costPrice: product.costPrice ?? "",
+      quantity: product.quantity ?? "",
+      minimumStock:
+        product.minimumStock ?? "",
+      categoryId:
+        product.categoryId ?? "",
+      status: product.status,
+    });
 
-  const matchesStatus = statusFilter
-    ? purchase.status === statusFilter
-    : true;
+    setIsEdit(true);
+    setOpenForm(true);
+  };
 
-  return (
-    matchesSearch &&
-    matchesStartDate &&
-    matchesEndDate &&
-    matchesSupplier &&
-    matchesStatus
-  );
-});
-const paginatedPurchases = filteredPurchases.slice(
-  page * rowsPerPage,
-  page * rowsPerPage + rowsPerPage
-);
-const activeProducts = products.filter(
-  (product) => product.status !== false
-);
+  const handleStatusClick = (product) => {
+    setSelectedProduct(product);
+    setStatusDialogOpen(true);
+  };
 
-const handleDeletePurchase = async (purchase) => {
-  const confirmDelete = window.confirm(
-    `Delete purchase ${purchase.invoiceNumber}? Stock will be rolled back.`
-  );
-  const handleOpenReturn = async (purchase) => {
-  const res = await api.get(`/purchases/${purchase.id}`);
-  setReturnPurchase(res.data.data);
-  setReturnOpen(true);
-};
+  const handleStatusChange = async () => {
+    if (!selectedProduct) {
+      return;
+    }
 
-const handleSaveReturn = async (data) => {
-  await api.post("/purchases/return", data);
+    const currentlyActive =
+      selectedProduct.status !== false;
 
-  setReturnOpen(false);
-  setReturnPurchase(null);
+    const newStatus = !currentlyActive;
 
-  fetchPurchases();
-  fetchProducts();
+    try {
+      await api.patch(
+        `/products/${selectedProduct.id}/status`,
+        null,
+        {
+          params: {
+            active: newStatus,
+          },
+        }
+      );
 
-  alert("Purchase return completed successfully!");
-};
+      showSuccess(
+        newStatus
+          ? "Product activated successfully!"
+          : "Product deactivated successfully!"
+      );
 
-  if (!confirmDelete) return;
+      setStatusDialogOpen(false);
+      setSelectedProduct(null);
 
-  await api.delete(`/purchases/${purchase.id}`);
+      await fetchProducts();
+    } catch (error) {
+      console.error(
+        "Product status update failed:",
+        error
+      );
 
-  fetchPurchases();
-  fetchProducts();
-  showSuccess("Purchase deleted and stock rolled back!");
-};
-const handleOpenReturn = async (purchase) => {
-  const res = await api.get(`/purchases/${purchase.id}`);
-  setReturnPurchase(res.data.data);
-  setReturnOpen(true);
-};
+      showError(
+        error.response?.data?.message ||
+          "Unable to update product status."
+      );
+    }
+  };
 
-const handleSaveReturn = async (data) => {
-  await api.post("/purchases/return", data);
+  const handleDeleteClick = (product) => {
+    setSelectedProduct(product);
+    setDeleteDialogOpen(true);
+  };
 
-  setReturnOpen(false);
-  setReturnPurchase(null);
+  const handleDelete = async () => {
+    if (!selectedProduct) {
+      return;
+    }
 
-  fetchPurchases();
-  fetchProducts();
+    try {
+      await api.delete(
+        `/products/${selectedProduct.id}`
+      );
 
-  alert("Purchase return completed successfully!");
-};
+      showSuccess(
+        "Product permanently deleted successfully!"
+      );
+
+      setDeleteDialogOpen(false);
+      setSelectedProduct(null);
+
+      await fetchProducts();
+    } catch (error) {
+      console.error(
+        "Product delete failed:",
+        error
+      );
+
+      showError(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          "This product cannot be deleted. Deactivate it instead."
+      );
+
+      setDeleteDialogOpen(false);
+      setSelectedProduct(null);
+    }
+  };
+
+  const filteredProducts = useMemo(() => {
+    const searchValue =
+      search.trim().toLowerCase();
+
+    return [...products]
+      .filter((product) => {
+        const matchesSearch =
+          String(product.name || "")
+            .toLowerCase()
+            .includes(searchValue) ||
+          String(product.sku || "")
+            .toLowerCase()
+            .includes(searchValue) ||
+          String(product.categoryName || "")
+            .toLowerCase()
+            .includes(searchValue);
+
+        const isActive =
+          product.status !== false;
+
+        const matchesStatus =
+          statusFilter === "ALL" ||
+          (
+            statusFilter === "ACTIVE" &&
+            isActive
+          ) ||
+          (
+            statusFilter === "INACTIVE" &&
+            !isActive
+          );
+
+        const matchesCategory =
+          categoryFilter === "ALL" ||
+          String(product.categoryId) ===
+            String(categoryFilter);
+
+        return (
+          matchesSearch &&
+          matchesStatus &&
+          matchesCategory
+        );
+      })
+      .sort((first, second) => {
+        const firstActive =
+          first.status !== false;
+
+        const secondActive =
+          second.status !== false;
+
+        if (firstActive === secondActive) {
+          return (
+            Number(second.id) -
+            Number(first.id)
+          );
+        }
+
+        return firstActive ? -1 : 1;
+      });
+  }, [
+    products,
+    search,
+    statusFilter,
+    categoryFilter,
+  ]);
+
+  const selectedProductActive =
+    selectedProduct?.status !== false;
 
   return (
     <Box>
       <PageHeader
-        title="Purchases"
-        buttonText="New Purchase"
-        onButtonClick={() => setOpen(true)}
+        title="Products"
+        buttonText="Add Product"
+        onButtonClick={() => {
+          setForm(initialForm);
+          setSelectedProduct(null);
+          setIsEdit(false);
+          setOpenForm(true);
+        }}
       />
 
-      <PurchaseSummaryCard />
-      <PurchaseStats purchases={purchases} />
-      <Box className="mobile-export-row">
-  <Button
-    variant="outlined"
-    onClick={() => exportPurchasesExcel(filteredPurchases)}
-  >
-    Export Excel
-  </Button>
-</Box>
-      <TextField
-  fullWidth
-  size="small"
-  placeholder="Search invoice or supplier..."
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-  sx={{
-    mt: 3,
-    mb: 2,
-    "& .MuiOutlinedInput-root": {
-      bgcolor: "background.paper",
-      color: "text.primary",
-      borderRadius: 2,
-    },
-    "& input::placeholder": {
-      color: "#94a3b8",
-      opacity: 1,
-    },
-  }}
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <SearchIcon sx={{ color: "#94a3b8" }} />
-      </InputAdornment>
-    ),
-  }}
-/>
-<Box className="mobile-filter-row">
-  <TextField
-  fullWidth
-  className="erp-filter-date"
-  label="Start Date"
-  type="date"
-  size="small"
-  slotProps={{
-  inputLabel: {
-    shrink: true,
-  },
-}}
-  value={startDate}
-  onChange={(e) => setStartDate(e.target.value)}
-  InputLabelProps={{ shrink: true }}
-/>
+      <SearchToolbar
+        value={search}
+        onChange={setSearch}
+        placeholder="Search Products..."
+      />
 
-  <TextField
-  fullWidth
-  className="erp-filter-date"
-  label="End Date"
-  type="date"
-  size="small"
-  slotProps={{
-  inputLabel: {
-    shrink: true,
-  },
-}}
-  value={endDate}
-  onChange={(e) => setEndDate(e.target.value)}
-  InputLabelProps={{ shrink: true }}
-/>
-  <TextField
-  select
-  fullWidth
-  label="Supplier"
-  size="small"
-  value={supplierFilter}
-  onChange={(e) => setSupplierFilter(e.target.value)}
-  sx={{
-    bgcolor: "text.primary",
-    borderRadius: 1,
-  }}
->
-  <MenuItem value="">All Suppliers</MenuItem>
-  {suppliers.map((supplier) => (
-    <MenuItem key={supplier.id} value={supplier.name}>
-      {supplier.name}
-    </MenuItem>
-  ))}
-</TextField>
+      <Box
+        sx={{
+          mb: 2,
+          display: "flex",
+          flexDirection: {
+            xs: "column",
+            sm: "row",
+          },
+          alignItems: {
+            xs: "stretch",
+            sm: "center",
+          },
+          gap: 2,
+        }}
+      >
+        <TextField
+          select
+          fullWidth
+          size="small"
+          label="Product Status"
+          value={statusFilter}
+          onChange={(event) =>
+            setStatusFilter(event.target.value)
+          }
+          sx={{
+            maxWidth: {
+              xs: "100%",
+              sm: 220,
+            },
+            bgcolor: "background.paper",
+          }}
+        >
+          <MenuItem value="ALL">
+            All Products
+          </MenuItem>
 
-<TextField
-  select
-  fullWidth
-  label="Status"
-  size="small"
-  value={statusFilter}
-  onChange={(e) => setStatusFilter(e.target.value)}
-  sx={{ bgcolor: "text.primary", borderRadius: 1}}
->
-  <MenuItem value="">All Status</MenuItem>
-  <MenuItem value="COMPLETED">COMPLETED</MenuItem>
-</TextField>
+          <MenuItem value="ACTIVE">
+            Active Products
+          </MenuItem>
 
-<Button
- className="mobile-clear-btn"
-  variant="outlined"
-  onClick={() => {
-    setSearch("");
-    setStartDate("");
-    setEndDate("");
-    setSupplierFilter("");
-    setStatusFilter("");
-  }}
->
-  Clear
-</Button>
-</Box>
-      <PurchaseHistoryTable
-  purchases={paginatedPurchases}
-  onView={handleViewPurchase}
-  onPdf={handleDownloadPdf}
-  onEdit={(purchase) => alert("Edit purchase will be added after stock recalculation backend")}
-  onDelete={handleDeletePurchase}
-  onReturn={handleOpenReturn}
-/>
+          <MenuItem value="INACTIVE">
+            Inactive Products
+          </MenuItem>
+        </TextField>
 
-<TablePagination
-  component="div"
-  count={filteredPurchases.length}
-  page={page}
-  onPageChange={(event, newPage) => setPage(newPage)}
-  rowsPerPage={rowsPerPage}
-  onRowsPerPageChange={(event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  }}
-  rowsPerPageOptions={[5, 10, 25]}
-  sx={{
-    color: "text.primary",
-    mt: 2,
-  }}
-/>
+        <TextField
+          select
+          fullWidth
+          size="small"
+          label="Category"
+          value={categoryFilter}
+          onChange={(event) =>
+            setCategoryFilter(event.target.value)
+          }
+          sx={{
+            maxWidth: {
+              xs: "100%",
+              sm: 240,
+            },
+            bgcolor: "background.paper",
+          }}
+        >
+          <MenuItem value="ALL">
+            All Categories
+          </MenuItem>
 
-      <PurchaseForm
-        open={open}
-        onClose={() => setOpen(false)}
-        suppliers={suppliers}
-        products={activeProducts}
+          {categories.map((category) => (
+            <MenuItem
+              key={category.id}
+              value={String(category.id)}
+            >
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
+
+      <ProductTable
+        products={filteredProducts}
+        onEdit={handleEdit}
+        onStatusChange={handleStatusClick}
+        onDelete={handleDeleteClick}
+      />
+
+      <ProductForm
+        open={openForm}
+        onClose={() => {
+          setOpenForm(false);
+          setSelectedProduct(null);
+          setForm(initialForm);
+          setIsEdit(false);
+        }}
+        onSave={handleSave}
         form={form}
-        handleChange={handleChange}
-        handleItemChange={handleItemChange}
-        addItem={addItem}
-        removeItem={removeItem}
-        calculateTotal={calculateTotal}
-        handleSave={handleSave}
+        setForm={setForm}
+        isEdit={isEdit}
+        categories={activeCategories}
       />
-        <PurchaseDetailsDialog
-  open={detailsOpen}
-  onClose={() => setDetailsOpen(false)}
-  purchase={selectedPurchase}
-/>
-<PurchaseReturnDialog
-  open={returnOpen}
-  onClose={() => setReturnOpen(false)}
-  purchase={returnPurchase}
-  onSave={handleSaveReturn}
-/>
+
+      <Dialog
+        open={statusDialogOpen}
+        onClose={() =>
+          setStatusDialogOpen(false)
+        }
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>
+          {selectedProductActive
+            ? "Deactivate Product"
+            : "Activate Product"}
+        </DialogTitle>
+
+        <DialogContent>
+          {selectedProductActive
+            ? `Deactivate "${selectedProduct?.name}"? This product will become unavailable for new transactions.`
+            : `Activate "${selectedProduct?.name}"? This product will become available for new transactions.`}
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            onClick={() =>
+              setStatusDialogOpen(false)
+            }
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: selectedProductActive
+                ? "#dc2626"
+                : "#16a34a",
+
+              "&:hover": {
+                bgcolor: selectedProductActive
+                  ? "#b91c1c"
+                  : "#15803d",
+              },
+            }}
+            onClick={handleStatusChange}
+          >
+            {selectedProductActive
+              ? "Deactivate"
+              : "Activate"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() =>
+          setDeleteDialogOpen(false)
+        }
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>
+          Permanently Delete Product
+        </DialogTitle>
+
+        <DialogContent>
+          Delete "{selectedProduct?.name}" permanently?
+          This is only allowed when the product has no
+          sales, purchase, or stock-adjustment history.
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            onClick={() =>
+              setDeleteDialogOpen(false)
+            }
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleDelete}
+          >
+            Delete Permanently
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <AppSnackbar
-  open={snackbar.open}
-  message={snackbar.message}
-  severity={snackbar.severity}
-  onClose={closeSnackbar}
-/>
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
     </Box>
   );
 }
 
-export default Purchases;
-
+export default Products;

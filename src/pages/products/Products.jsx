@@ -35,6 +35,7 @@ const initialForm = {
   costPrice: "",
   quantity: "",
   minimumStock: "",
+  categoryId: "",
 };
 
 function Products() {
@@ -56,14 +57,13 @@ function Products() {
 
   const [form, setForm] = useState(initialForm);
   const [isEdit, setIsEdit] = useState(false);
-
   const {
     snackbar,
     showSuccess,
     showError,
     closeSnackbar,
   } = useAppSnackbar();
-
+const [categories, setCategories] = useState([]);
   const fetchProducts = async () => {
     try {
       const res = await api.get("/products");
@@ -77,15 +77,30 @@ function Products() {
       showError("Unable to load products.");
     }
   };
+const fetchCategories = async () => {
+  try {
+    const res = await api.get("/categories");
 
+    setCategories(
+      res.data.data || []
+    );
+  } catch (error) {
+    console.error(
+      "Category loading failed:",
+      error
+    );
+  }
+};
   useEffect(() => {
     fetchProducts();
+  fetchCategories();
   }, []);
 
   const handleSave = async () => {
     try {
       const payload = {
         ...form,
+        categoryId: Number(form.categoryId),
         sellingPrice: Number(form.sellingPrice),
         costPrice: Number(form.costPrice),
         quantity: Number(form.quantity),
@@ -140,8 +155,8 @@ function Products() {
         product.sellingPrice ?? "",
       costPrice: product.costPrice ?? "",
       quantity: product.quantity ?? "",
-      minimumStock:
-        product.minimumStock ?? "",
+      minimumStock:product.minimumStock ?? "",
+      categoryId: product.categoryId || "",
       status: product.status,
     });
 
@@ -283,7 +298,9 @@ function Products() {
 
   const selectedProductActive =
     selectedProduct?.status !== false;
-
+const activeCategories = categories.filter(
+  (category) => category.status !== false
+);
   return (
     <Box>
       <PageHeader
@@ -351,6 +368,7 @@ function Products() {
         onDelete={handleDeleteClick}
       />
 
+
       <ProductForm
         open={openForm}
         onClose={() => setOpenForm(false)}
@@ -358,6 +376,7 @@ function Products() {
         form={form}
         setForm={setForm}
         isEdit={isEdit}
+        categories={activeCategories}
       />
 
       <Dialog
